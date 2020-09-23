@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Martin\\Desktop\\Praktik\\SCDFrontend\\SCDFrontend.csproj": {}
+    "C:\\Users\\Annika\\Desktop\\Praktik\\SCDFrontend\\SCDFrontend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Martin\\Desktop\\Praktik\\SCDFrontend\\SCDFrontend.csproj": {
+    "C:\\Users\\Annika\\Desktop\\Praktik\\SCDFrontend\\SCDFrontend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Martin\\Desktop\\Praktik\\SCDFrontend\\SCDFrontend.csproj",
+        "projectUniqueName": "C:\\Users\\Annika\\Desktop\\Praktik\\SCDFrontend\\SCDFrontend.csproj",
         "projectName": "SCDFrontend",
-        "projectPath": "C:\\Users\\Martin\\Desktop\\Praktik\\SCDFrontend\\SCDFrontend.csproj",
-        "packagesPath": "C:\\Users\\Martin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Martin\\Desktop\\Praktik\\SCDFrontend\\obj\\",
+        "projectPath": "C:\\Users\\Annika\\Desktop\\Praktik\\SCDFrontend\\SCDFrontend.csproj",
+        "packagesPath": "C:\\Users\\Annika\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Annika\\Desktop\\Praktik\\SCDFrontend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Martin\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Annika\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netstandard2.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,6 +36,10 @@
       "frameworks": {
         "netstandard2.1": {
           "dependencies": {
+            "Microsoft.AspNet.Mvc": {
+              "target": "Package",
+              "version": "[5.2.7, )"
+            },
             "Microsoft.AspNetCore.Components.WebAssembly": {
               "target": "Package",
               "version": "[3.2.1, )"
@@ -51,6 +53,14 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[3.2.1, )"
+            },
+            "Microsoft.Azure.Cosmos": {
+              "target": "Package",
+              "version": "[3.12.0, )"
+            },
+            "Microsoft.Azure.DocumentDB.Core": {
+              "target": "Package",
+              "version": "[2.11.6, )"
             },
             "System.Net.Http.Json": {
               "target": "Package",
@@ -72,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

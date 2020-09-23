@@ -1,7 +1,113 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@using SCDFrontend.DataAccess;
+@using SCDFrontend.Models;
+@using Microsoft.AspNetCore.Components.Web;
+@using System.Web;
 
-Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<h1>Installations</h1>
+<hr />
+
+<input @bind-value="SearchTerm" @bind-value:event="oninput" placeholder="Search" />
+
+<br/>
+
+<div>
+    @if (Installations == null)
+    {
+        <h1><em>Loading...</em></h1>
+    }
+    else
+    {
+        <table class="table table-hover table-dark">
+            <thead>
+                <tr>
+                    <th @onclick="@(() => SortData("ID"))" scope="col">#</th>
+                    <th @onclick="@(() => SortData("NAME"))" scope="col">Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Active users</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Installation ins in Filtered)
+                {
+                    <tr>
+                        <th scope="row">@ins.id</th>
+                        <td>@ins.name</td>
+                        <td>@ins.status</td>
+                        <td>@ins.active_users</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-dark" @onclick="LoadInstallations">Refresh</button>
+    }
+</div>
+
+@code {
+    private List<Installation> Installations = null;
+
+    // Load data from database
+    public async Task LoadInstallations()
+    {
+        Installations = null;
+        Installations = await CosmosConnector.GetInstallationsAsync();
+    }
+
+    protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
+    {
+        await LoadInstallations();
+    }
+
+    // Search
+    string SearchTerm { get; set; } = "";
+
+    List<Installation> Filtered => Installations.Where(i =>
+    {
+        string S = SearchTerm.ToLower();
+
+    // Search for name and id
+    return i.name.ToLower().Contains(S) || i.ToString().ToLower().Contains(S);
+    }).ToList();
+
+
+    // Order
+    // Works but not very pretty
+    bool isSortedAscending = true;
+    string activeSortColumn = "";
+
+    private void SortData(string columnName)
+    {
+        List<Installation> SortedInst = new List<Installation>();
+        switch (columnName)
+        {
+            case "ID":
+                if (isSortedAscending)
+                {
+                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
+                    isSortedAscending = false;
+                }
+                else
+                {
+                    Installations = Filtered.OrderBy(i => i.id).ToList();
+                    isSortedAscending = true;
+                }
+                break;
+
+            case "NAME":
+                if (isSortedAscending)
+                {
+                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
+                    isSortedAscending = false;
+                }
+                else
+                {
+                    Installations = Filtered.OrderBy(i => i.id).ToList();
+                    isSortedAscending = true;
+                }
+                break;
+        }
+    }
+}
+

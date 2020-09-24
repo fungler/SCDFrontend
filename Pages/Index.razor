@@ -5,7 +5,6 @@
 @using Microsoft.AspNetCore.Components.Web;
 @using System.Web;
 
-
 <h1>Installations</h1>
 <hr />
 
@@ -46,13 +45,15 @@
 </div>
 
 @code {
+
+
     private List<Installation> Installations = null;
 
     // Load data from database
     public async Task LoadInstallations()
     {
         Installations = null;
-        Installations = await CosmosConnector.GetInstallationsAsync();
+        Installations = await ApiConnector.GetInstallations();
     }
 
     protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)

@@ -1,0 +1,51 @@
+@page "/inst/{id}"
+
+@using SCDFrontend.DataAccess;
+@using SCDFrontend.Models;
+@using System.Threading.Tasks;
+
+<h1>Installation #@id</h1>
+<hr/>
+
+
+
+<div class="row">
+    <div class="column" style="background-color:#aaa;">
+        @if (Installation == null) {
+            <p>Loading...</p>
+        } else{
+            <h2>Info</h2>
+            <p>Id: @Installation.id</p>
+            <p>Name: @Installation.name</p>
+            <p>Status: @Installation.status</p>
+            <p>Active users: @Installation.active_users</p>
+        }
+    </div>
+    <div class="column" style="background-color:#bbb;">
+        <button type="button">Launch</button><br/>
+        <button type="button">Start</button><br/>
+        <button type="button">Stop</button><br/>
+        <button type="button">Delete</button>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+
+    private Installation Installation = null;
+
+    public async Task LoadInstallation(string instId)
+    {
+        Installation = null;
+        Console.Write("Something");
+        Installation = await ApiConnector.GetInstallation(instId);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.Write("Test2");
+        await LoadInstallation(id);
+    }
+}

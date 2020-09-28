@@ -27,5 +27,18 @@ namespace SCDFrontend.DataAccess
             }
             return installations;
         }
+
+        public static async Task<Installation> GetInstallation(string id)
+        {
+
+            Installation inst = null;
+
+            HttpResponseMessage response = await client.GetAsync("https://localhost:6001/api/installations/" + id);
+
+            String res = await response.Content.ReadAsStringAsync();
+            inst = JsonConvert.DeserializeObject<Installation>(res);
+
+            return inst;
+        }
     }
 }

@@ -4,7 +4,10 @@
 @using SCDFrontend.Models;
 @using Microsoft.AspNetCore.Components.Web;
 @using System.Web;
+@inject NavigationManager NavigationManager;
 
+<head>
+</head>
 <h1>Installations</h1>
 <hr />
 
@@ -31,8 +34,8 @@
             <tbody>
                 @foreach (Installation ins in Filtered)
                 {
-                    <tr>
-                        <th scope="row">@ins.id</th>
+                    <tr @onclick="@(() => Navigate(@ins.id))">
+                        <th>@ins.id</th>
                         <td>@ins.name</td>
                         <td>@ins.status</td>
                         <td>@ins.active_users</td>
@@ -42,10 +45,25 @@
         </table>
         <button type="button" class="btn btn-dark" @onclick="LoadInstallations">Refresh</button>
     }
+
 </div>
 
-@code {
 
+
+@code {
+    Installation installation = null;
+    private void Navigate(int id)
+    {
+
+        NavigationManager.NavigateTo("/inst/" + id);
+    }
+
+
+    public async Task LoadInstallation(string id)
+    {
+        installation = null;
+        installation = await ApiConnector.GetInstallation(id);
+    }
 
     private List<Installation> Installations = null;
 

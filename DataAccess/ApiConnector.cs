@@ -12,14 +12,14 @@ namespace SCDFrontend.DataAccess
 
     public static class ApiConnector
     {
-        private static readonly string BaseUrl = "https://localhost:6001/api/";
+        private static readonly string BaseUrl = "https://localhost:44373/api/";
 
         private static readonly HttpClient client = new HttpClient();
 
         public static async Task<List<Installation>> GetInstallations()
         {
             List<Installation> installations = new List<Installation>();
-            HttpResponseMessage response = await client.GetAsync("https://localhost:6001/api/installations/all");
+            HttpResponseMessage response = await client.GetAsync("https://localhost:44373/api/installations/all");
             if (response.IsSuccessStatusCode)
             {
                 String res = await response.Content.ReadAsStringAsync();
@@ -33,7 +33,7 @@ namespace SCDFrontend.DataAccess
 
             Installation inst = null;
 
-            HttpResponseMessage response = await client.GetAsync("https://localhost:6001/api/installations/" + id);
+            HttpResponseMessage response = await client.GetAsync("https://localhost:44373/api/installations/" + id);
 
             String res = await response.Content.ReadAsStringAsync();
             inst = JsonConvert.DeserializeObject<Installation>(res);

@@ -3,6 +3,7 @@
 @using SCDFrontend.DataAccess;
 @using SCDFrontend.Models;
 @using System.Threading.Tasks;
+@inject IJSRuntime JSRuntime
 
 <h1>Installation #@id</h1>
 <hr/>
@@ -22,7 +23,7 @@
         }
     </div>
     <div class="column" style="background-color:#bbb;">
-        <button type="button">Launch</button><br/>
+        <button type="button" @onclick="DownloadText">Launch</button><br/>
         <button type="button">Start</button><br/>
         <button type="button">Stop</button><br/>
         <button type="button">Delete</button>
@@ -31,6 +32,30 @@
 
 
 @code {
+    async Task DownloadText()
+    {
+        // Generate a text file
+        byte[] file = System.Text.Encoding.UTF8.GetBytes("Hello world!");
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "file.txt", "text/plain", file);
+    }
+    async Task DownloadBinary()
+    {
+        byte[] file = Enumerable.Range(0, 100).Cast<byte>().ToArray<byte>();
+        string fileName = "file.bin";
+        string contentType = "application/octet-stream";
+
+        // Check if the IJSRuntime is the WebAssembly implementation of the JSRuntime
+        if (JSRuntime is IJSUnmarshalledRuntime webAssemblyJSRuntime)
+        {
+            webAssemblyJSRuntime.InvokeUnmarshalled<string, string, byte[], bool>("BlazorDownloadFileFast", fileName, contentType, file);
+        }
+        else
+        {
+            // Fall back to the slow method if not in WebAssembly
+            await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", fileName, contentType, file);
+        }
+    }
+
     [Parameter]
     public string id { get; set; }
 

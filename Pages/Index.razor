@@ -29,16 +29,18 @@
                     <th @onclick="@(() => SortData("NAME"))" scope="col">Name</th>
                     <th scope="col">Status</th>
                     <th scope="col">Active users</th>
+                    <th scope="col">Clients</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (Installation ins in Filtered)
+                @foreach (Installation inst in Filtered)
                 {
-                    <tr @onclick="@(() => Navigate(@ins.id))">
-                        <th>@ins.id</th>
-                        <td>@ins.name</td>
-                        <td>@ins.status</td>
-                        <td>@ins.active_users</td>
+                    <tr @onclick="@(() => Navigate(inst.id.ToString()))">
+                        <th>@inst.id</th>
+                        <td>@inst.name</td>
+                        <td>@inst.fullAddress</td>
+                        <td>@inst.subscription</td>
+                        <td>@inst.clientNames</td>
                     </tr>
                 }
             </tbody>
@@ -52,17 +54,17 @@
 
 @code {
     Installation installation = null;
-    private void Navigate(int id)
+    private void Navigate(string name)
     {
 
-        NavigationManager.NavigateTo("/inst/" + id);
+        NavigationManager.NavigateTo("/inst/" + name);
     }
 
 
-    public async Task LoadInstallation(string id)
+    public async Task LoadInstallation(string name)
     {
         installation = null;
-        installation = await ApiConnector.GetInstallation(id);
+        installation = await ApiConnector.GetInstallation(name);
     }
 
     private List<Installation> Installations = null;

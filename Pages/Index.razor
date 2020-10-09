@@ -27,15 +27,15 @@
                 <tr>
                     <th @onclick="@(() => SortData("ID"))" scope="col">#</th>
                     <th @onclick="@(() => SortData("NAME"))" scope="col">Name</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Active users</th>
+                    <th scope="col">IP</th>
+                    <th scope="col">Subscription ID</th>
                     <th scope="col">Clients</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (Installation inst in Filtered)
                 {
-                    <tr @onclick="@(() => Navigate(inst.id.ToString()))">
+                    <tr @onclick="@(() => Navigate(inst.name.ToString()))">
                         <th>@inst.id</th>
                         <td>@inst.name</td>
                         <td>@inst.fullAddress</td>

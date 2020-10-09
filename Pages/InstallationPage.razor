@@ -5,7 +5,7 @@
 @using System.Threading.Tasks;
 @inject IJSRuntime JSRuntime
 
-<h1>Installation #@id</h1>
+<h1>Installation: @id</h1>
 <hr/>
 
 
@@ -18,16 +18,51 @@
             <h2>Info</h2>
             <p>Id: @Installation.id</p>
             <p>Name: @Installation.name</p>
-            <p>Status: @Installation.clientNames</p>
-            <p>Active users: @Installation.fullAddress</p>
+            <p>Client: @Installation.clientNames</p>
+            <p>IP: @Installation.fullAddress</p>
         }
     </div>
     <div class="column" style="background-color:#bbb;">
-        <button type="button" @onclick="DownloadText">Launch</button><br/>
-        <button type="button">Start</button><br/>
-        <button type="button">Stop</button><br/>
-        <button type="button">Delete</button>
+        <button type="button" class="btn btn-dark" @onclick="DownloadText">Launch</button>
+        <br>
+        <br>
+        <button type="button" class="btn btn-dark">Start </button>
+        <br>
+        <br>
+        <button type="button" class="btn btn-dark">Stop  </button>
+        <br>
+        <br>
+        <button type="button" class="btn btn-dark">Delete</button>
     </div>
+    <hr />
+</div>
+<div>
+    <br>
+    @if(loading == false && json == null)
+    {
+        <button type="button" class="btn btn-info" @onclick="DownloadJson">Get latest JSON</button>
+    }
+    <br>
+
+    @if (json == null && loading == true)
+    {
+        <br>
+        <h3>Loading..</h3>
+        <hr />
+    }
+
+    @if(json != null)
+    {
+        <br>
+        <h3>Latest JSON info for installation: @Installation.name (@Installation.id)</h3>
+        <hr />
+        <code>
+            <pre>
+                @json
+            </pre>
+        </code>
+    }
+    
 </div>
 
 
@@ -54,6 +89,14 @@
             // Fall back to the slow method if not in WebAssembly
             await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", fileName, contentType, file);
         }
+    }
+
+    string json = null;
+    bool loading = false;
+    public async Task DownloadJson()
+    {
+        loading = true;
+        json = await ApiConnector.GetLatestJson(Installation.name);
     }
 
     [Parameter]

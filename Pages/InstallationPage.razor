@@ -3,6 +3,7 @@
 @using SCDFrontend.DataAccess;
 @using SCDFrontend.Models;
 @using System.Threading.Tasks;
+@using System.Text.Json.Serialization;
 @inject IJSRuntime JSRuntime
 
 <h1>Installation: @id</h1>
@@ -38,29 +39,165 @@
 </div>
 <div>
     <br>
-    @if(loading == false && json == null)
+    @if(loading == false && ins == null)
     {
         <button type="button" class="btn btn-info" @onclick="DownloadJson">Get latest JSON</button>
     }
     <br>
 
-    @if (json == null && loading == true)
+    @if (ins == null && loading == true)
     {
         <br>
         <h3>Loading..</h3>
         <hr />
     }
 
-    @if(json != null)
+    @if(ins != null)
     {
         <br>
         <h3>Latest JSON info for installation: @Installation.name (@Installation.id)</h3>
         <hr />
-        <code>
-            <pre>
-                @json
-            </pre>
-        </code>
+        <p>
+            @jsonNames["azureTenant"]: @ins.azureTenant <br/>
+            @jsonNames["subscriptionId"]: @ins.subscriptionId <br/>
+            @jsonNames["domainName"]: @ins.domainName <br/>
+            @jsonNames["network"]: <br/>
+            <span class="tab">@jsonNames["vnetResourceGroupName"]: @ins.network.vnetResourceGroupName</span><br/>
+            <span class="tab">@jsonNames["vnetName"]: @ins.network.vnetName</span><br/>
+            <span class="tab">@jsonNames["subnetName"]: @ins.network.subnetName</span><br/><br/>
+            
+            @jsonNames["secrets"]: <br/>
+            <span class="tab">@jsonNames["keyVaultName"]: @ins.secrets.keyVaultName</span> <br/>
+            <span class="tab">@jsonNames["adAutomationAccountPrefix"]: @ins.secrets.adAutomationAccountPrefix</span> <br/>
+            <span class="tab">@jsonNames["dbAutomationAccountPrefix"]: @ins.secrets.dbAutomationAccountPrefix</span><br/><br/>
+            
+             @jsonNames["installation"]: <br/>
+            <span class="tab">@jsonNames["name"]: @ins.installation.name</span> <br/>
+            <span class="tab">@jsonNames["resourceGroupName"]: @ins.installation.resourceGroupName</span> <br/>
+            <span class="tab">@jsonNames["location"]: @ins.installation.location</span> <br/>
+            <span class="tab">@jsonNames["storageAccountName"]: @ins.installation.storageAccountName</span> <br/>
+            <span class="tab">@jsonNames["adminsGroupName"]: @ins.installation.adminsGroupName</span> <br/>
+            <span class="tab">@jsonNames["fullyQualifiedGmsaName"]: @ins.installation.fullyQualifiedGmsaName</span> <br/>
+            <span class="tab">@jsonNames["gmsaHostsGroupDistinguishedName"]: @ins.installation.gmsaHostsGroupDistinguishedName</span> <br/>
+            <span class="tab">@jsonNames["gmsaName"]: @ins.installation.gmsaName</span> <br/>
+            <span class="tab">@jsonNames["gmsaHostsGroupName"]: @ins.installation.gmsaHostsGroupName</span> <br/>
+            <span class="tab">@jsonNames["organizationalUnitDistinguishedName"]: @ins.installation.organizationalUnitDistinguishedName</span> <br/>
+            <span class="tab">@jsonNames["serverLocalAdminGroup"]: @ins.installation.serverLocalAdminGroup</span> <br/>
+            <span class="tab">@jsonNames["usersGroupName"]: @ins.installation.usersGroupName</span> <br/>
+            <span class="tab">@jsonNames["keyVaultName"]: @ins.installation.keyVaultName</span> <br/><br/>
+            
+            <span class="tab">@jsonNames["databaseServer"]:</span> <br/>
+            <span class="tab2">@jsonNames["hostFqdn"]: @ins.installation.databaseServer.hostFqdn</span> <br/>
+            <span class="tab2">@jsonNames["ipAddress"]: @ins.installation.databaseServer.ipAddress</span> <br/>
+            <span class="tab2">@jsonNames["protocol"]: @ins.installation.databaseServer.protocol</span> <br/>
+            <span class="tab2">@jsonNames["port"]: @ins.installation.databaseServer.port</span> <br/>
+            <span class="tab2">@jsonNames["serviceName"]: @ins.installation.databaseServer.serviceName</span> <br/>
+            <span class="tab2">@jsonNames["ordsHttpsPort"]: @ins.installation.databaseServer.ordsHttpsPort</span> <br/><br/>
+
+
+            <span class="tab">@jsonNames["database"]:</span> <br/>
+            <span class="tab2">@jsonNames["pdbName"]: @ins.installation.database.pdbName</span> <br/>
+            <span class="tab2">@jsonNames["creationMethod"]: @ins.installation.database.creationMethod</span> <br/><br/>
+            
+            <span class="tab">@jsonNames["localFileSharePath"]: @ins.installation.localFileSharePath</span> <br/>
+            <span class="tab">@jsonNames["netRootUncPath"]: @ins.installation.netRootUncPath</span> <br/><br/>
+            
+            <span class="tab">@jsonNames["orderManager"]:</span> <br/>
+            <span class="tab2">@jsonNames["sqlServerFqdn"]: @ins.installation.orderManager.sqlServerFqdn</span> <br/>
+            <span class="tab2">@jsonNames["sqlDatabaseName"]: @ins.installation.orderManager.sqlDatabaseName</span> <br/><br/>
+
+
+            <span class="tab">@jsonNames["mucsPort"]: @ins.installation.mucsPort</span> <br/>
+            <span class="tab">@jsonNames["svcDirectoryServicePort"]: @ins.installation.svcDirectoryServicePort</span> <br/><br/>
+            
+            <span class="tab">@jsonNames["source"]:</span> <br/>
+            <span class="tab2">@jsonNames["fileSystem"]:</span> <br/>
+            <span class="tab3">@jsonNames["storageAccount"]:</span> <br/>
+            <span class="tab4">@jsonNames["subscriptionId"]: @ins.installation.source.fileSystem.storageAccount.subscriptionId</span> <br/>
+            <span class="tab4">@jsonNames["resourceGroupName"]: @ins.installation.source.fileSystem.storageAccount.resourceGroupName</span> <br/>
+            <span class="tab4">@jsonNames["name"]: @ins.installation.source.fileSystem.storageAccount.name</span> <br/>
+            <span class="tab4">@jsonNames["containerName"]: @ins.installation.source.fileSystem.storageAccount.containerName</span> <br/>
+            <span class="tab4">@jsonNames["path"]: @ins.installation.source.fileSystem.storageAccount.path</span> <br/><br/>
+            
+            <span class="tab2">@jsonNames["database"]:</span> <br/>
+            <span class="tab3">@jsonNames["type"]: @ins.installation.source.database.type</span> <br/>
+            <span class="tab3">@jsonNames["dbServerName"]: @ins.installation.source.database.dbServerName</span> <br/>
+            <span class="tab3">@jsonNames["dbInstanceName"]: @ins.installation.source.database.dbInstanceName</span> <br/>
+            <span class="tab3">@jsonNames["pdbName"]: @ins.installation.source.database.pdbName</span> <br/><br/>
+
+            <span class="tab">@jsonNames["state"]: @ins.installation.state</span> <br/>
+            <span class="tab">@jsonNames["iconColor"]: @ins.installation.iconColor</span> <br/><br/>
+
+            <span class="tab">@jsonNames["tags"]:</span> <br/>
+            <span class="tab2">@jsonNames["creator"]: @ins.installation.tags.creator</span> <br/>
+            <span class="tab2">@jsonNames["cost-center"]: @ins.installation.tags.costcenter</span> <br/>
+            <span class="tab2">@jsonNames["legal-unit"]: @ins.installation.tags.</span> <br/>
+            <span class="tab2">@jsonNames["environment"]: @ins.installation.tags.environment</span> <br/>
+            <span class="tab2">@jsonNames["vm-backup"]: @ins.installation.tags.vmbackup</span> <br/>
+            <span class="tab2">@jsonNames["sql-backup"]: @ins.installation.tags.sqlbackup</span> <br/>
+            <span class="tab2">@jsonNames["customer-data"]: @ins.installation.tags.customerdata</span> <br/>
+            <span class="tab2">@jsonNames["personal-data"]: @ins.installation.tags.personaldata</span> <br/>
+            <span class="tab2">@jsonNames["expiration-date"]: @ins.installation.tags.expirationdate</span> <br/>
+            <span class="tab2">@jsonNames["service-window"]: @ins.installation.tags.servicewindow</span> <br/>
+            <span class="tab2">@jsonNames["application"]: @ins.installation.tags.application</span> <br/>
+            <span class="tab2">@jsonNames["client-shortname"]: @ins.installation.tags.clientshortname</span> <br/><br/>
+
+            <span class="tab">@jsonNames["internationalSettings"]:</span> <br/>
+            <span class="tab2">@jsonNames["inputLanguageId"]: @ins.installation.internationalSettings.inputLanguageId</span> <br/>
+            <span class="tab2">@jsonNames["format"]: @ins.installation.internationalSettings.format</span> <br/>
+            <span class="tab2">@jsonNames["systemLocale"]: @ins.installation.internationalSettings.systemLocale</span> <br/>
+            <span class="tab2">@jsonNames["geoId"]: @ins.installation.internationalSettings.geoId</span> <br/><br/>
+
+            <span class="tab">@jsonNames["vmScaleSets"]:</span> <br/>
+            
+            @foreach (var vmsc in ins.installation.vmScaleSets)
+            {
+                <span class="tab2">@jsonNames["name"]: @vmsc.name</span> <br/>
+                <span class="tab2">@jsonNames["computerNamePrefix"]: @vmsc.computerNamePrefix</span> <br/>
+                <span class="tab2">@jsonNames["instanceCount"]: @vmsc.instanceCount</span> <br/>
+
+                <span class="tab2">@jsonNames["instance"]:</span> <br/>
+                <span class="tab3">@jsonNames["vmSize"]: @vmsc.instance.vmSize</span> <br/>
+                <span class="tab3">@jsonNames["vmImageSku"]: @vmsc.instance.vmImageSku</span> <br/>
+                <span class="tab3">@jsonNames["licenseType"]: @vmsc.instance.licenseType</span> <br/>
+                <span class="tab3">@jsonNames["configurationMode"]: @vmsc.instance.configurationMode</span> <br/>
+                
+                <span class="tab3">@jsonNames["roles"]:</span> <br/>
+                @foreach (var r in @vmsc.instance.roles)
+                {
+                    <span class="tab4">@jsonNames["name"]: @r.name</span> <br/>
+                    <span class="tab4">@jsonNames["additional"]: @r.additional</span> <br/>
+                }
+            }
+
+            <span class="tab">@jsonNames["vms"]:</span> <br/>    
+            @foreach (var vm in ins.installation.vms) 
+            {
+                <span class="tab2">@jsonNames["name"]: @vm.name</span> <br/>
+                <span class="tab2">@jsonNames["vmSize"]: @vm.vmSize</span> <br/>
+                <span class="tab2">@jsonNames["vmImageSku"]: @vm.vmImageSku</span> <br/>
+                <span class="tab2">@jsonNames["licenseType"]: @vm.licenseType</span> <br/>
+                <span class="tab2">@jsonNames["configurationMode"]: @vm.configurationMode</span> <br/>
+                <span class="tab2">@jsonNames["roles"]: </span> <br/>
+
+                @foreach (var r in vm.roles)
+                {
+                    @if (r.name is not null) {
+                        <span class="tab3">@jsonNames["name"]: @r.name </span> <br/>
+                    }
+                    @if (r.satag is not null) { 
+                        <span class="tab3">@jsonNames["satag"]: @r.satag </span> <br/>
+                    }
+                    @if (r.additional is not null) {
+                        <span class="tab3">@jsonNames["additional"]: @r.additional </span> <br/>
+                    }
+                    <br/>
+                }
+            }
+
+            
+
+        </p>
     }
     
 </div>
@@ -91,12 +228,12 @@
         }
     }
 
-    string json = null;
+    InstallationRoot ins = null;
     bool loading = false;
     public async Task DownloadJson()
     {
         loading = true;
-        json = await ApiConnector.GetLatestJson(Installation.name);
+        ins = await ApiConnector.GetLatestJson(Installation.name);
     }
 
     [Parameter]
@@ -116,4 +253,89 @@
         Console.Write("Test2");
         await LoadInstallation(id);
     }
+
+    Dictionary<String, String> jsonNames = new Dictionary<string, string> 
+        {
+            {"azureTenant", "Azure Tenant"},
+            {"subscriptionId", "Subscription Id"},
+            {"domainName", "Domain Name"},
+            {"network", "Network"},
+            {"vnetResourceGroupName", "VNet Resource Group Name"},
+            {"vnetName", "VNet Name"},
+            {"subnetName", "Subnet Name"},
+            {"secrets", "Secrets"},
+            {"keyVaultName", "Key Vault Name"},
+            {"adAutomationAccountPrefix", "AD Automation Account Prefix"},
+            {"dbAutomationAccountPrefix", "DB Automation Account Prefix"},
+            {"installation", "Installation"},
+            {"name", "Name"},
+            {"resourceGroupName", "Resource Group Name"},
+            {"location", "Location"},
+            {"storageAccountName", "Storage Account Name"},
+            {"adminsGroupName", "Admins Group Name"},
+            {"fullyQualifiedGmsaName", "Fullt Qaykufued GMSA Name"},
+            {"gmsaHostsGroupDistinguishedName", "GMSA Hosts Group Distinguished Name"},
+            {"gmsaHostsGroupName", "GMSA Hosts Group Name"},
+            {"gmsaName", "GMSA Name"},
+            {"organizationalUnitDistinguishedName", "Organizational Unit Distinguished Name"},
+            {"serverLocalAdminGroup", "Server Local Admin Group"},
+            {"usersGroupName", "Users Group Name"},
+            {"databaseServer", "Database Server"},
+            {"hostFqdn", "Host FQDN"},
+            {"ipAddress", "IP Address"},
+            {"protocol", "Protocol"},
+            {"port", "Port"},
+            {"serviceName", "Service Name"},
+            {"ordsHttpsPort", "ORDS Https Port"},
+            {"database", "Database"},
+            {"pdbName", "PDB Name"},
+            {"creationMethod", "Creation Method"},
+            {"localFileSharePath", "Local File Share Path"},
+            {"netRootUncPath", "Net Root UNC Path"},
+            {"orderManager", "Order Manager"},
+            {"sqlServerFqdn", "SQL Server FQDN"},
+            {"sqlDatabaseName", "SQL Database Name"},
+            {"mucsPort", "MUSC Port"},
+            {"svcDirectoryServicePort", "SVC Directory Service Port"},
+            {"source", "Source"},
+            {"fileSystem", "File System"},
+            {"storageAccount", "Storage Account"},
+            {"containerName", "Container Name"},
+            {"path", "Path"},
+            {"type", "Type"},
+            {"dbServerName", "DB Server Name"},
+            {"dbInstanceName", "DB Instance Name"},
+            {"state", "State"},
+            {"iconColor", "Icon Color"},
+            {"tags", "Tags"},
+            {"creator", "Creator"},
+            {"cost-center", "Cost Center"},
+            {"legal-unit", "Legal Unit"},
+            {"environment", "Environment"},
+            {"vm-backup", "VM Backup"},
+            {"sql-backup", "SQL Backup"},
+            {"customer-data", "Customer Data"},
+            {"personal-data", "Personal Data"},
+            {"expiration-date", "Expiration Date"},
+            {"service-window", "Service Window"},
+            {"application", "Application"},
+            {"client-shortname", "Client Shortname"},
+            {"internationalSettings", "International Settings"},
+            {"inputLanguageId", "Input Language Id"},
+            {"format", "Format"},
+            {"systemLocale", "System Locale"},
+            {"geoId", "Geo Id"},
+            {"vmScaleSets", "VM Scale Sets"},
+            {"computerNamePrefix", "Computer Name Prefix"},
+            {"instanceCount", "Instance Count"},
+            {"instance", "Instance"},
+            {"vmSize", "VM Size"},
+            {"vmImageSku", "VM Image SKU"},
+            {"licenseType", "License Type"},
+            {"configurationMode", "Configuration Mode"},
+            {"roles", "Roles"},
+            {"additional", "Additional"},
+            {"vms", "VMs"},
+            {"satag", "SATAG"},
+        };
 }

@@ -192,4 +192,17 @@ app {
         display: table;
         clear: both;
     }
+
+    .tab { display: inline-block; 
+        margin-left: 40px;  }
+
+    .tab2 { display: inline-block; 
+        margin-left: 80px;  }
+
+
+    .tab3 { display: inline-block; 
+        margin-left: 120px;  }
+    
+    .tab4 { display: inline-block; 
+        margin-left: 160px;  }
 }

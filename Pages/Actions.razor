@@ -1,0 +1,39 @@
+@inject IJSRuntime JSRuntime
+
+<button type="button" class="btn btn-dark" @onclick="DownloadText">Launch</button>
+        <br>
+        <br>
+        <button type="button" class="btn btn-dark">Start </button>
+        <br>
+        <br>
+        <button type="button" class="btn btn-dark">Stop  </button>
+        <br>
+        <br>
+        <button type="button" class="btn btn-dark">Delete</button>
+
+
+@code {
+    async Task DownloadText()
+    {
+        // Generate a text file
+        byte[] file = System.Text.Encoding.UTF8.GetBytes("full address:s:20.52.46.188:3389\nprompt for credentials:i:1\nadministrative session:i:1");
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "connect.rdp", "text/plain", file);
+    }
+    async Task DownloadBinary()
+    {
+        byte[] file = Enumerable.Range(0, 100).Cast<byte>().ToArray<byte>();
+        string fileName = "file.bin";
+        string contentType = "application/octet-stream";
+
+        // Check if the IJSRuntime is the WebAssembly implementation of the JSRuntime
+        if (JSRuntime is IJSUnmarshalledRuntime webAssemblyJSRuntime)
+        {
+            webAssemblyJSRuntime.InvokeUnmarshalled<string, string, byte[], bool>("BlazorDownloadFileFast", fileName, contentType, file);
+        }
+        else
+        {
+            // Fall back to the slow method if not in WebAssembly
+            await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", fileName, contentType, file);
+        }
+    }
+}

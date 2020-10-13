@@ -19,7 +19,7 @@ namespace SCDFrontend.DataAccess
         public static async Task<List<Installation>> GetInstallations()
         {
             List<Installation> installations = new List<Installation>();
-            HttpResponseMessage response = await client.GetAsync("https://localhost:6001/api/installations/all");
+            HttpResponseMessage response = await client.GetAsync(BaseUrl + "installations/all");
             Console.WriteLine("Before");
             if (response.IsSuccessStatusCode)
             {
@@ -34,7 +34,7 @@ namespace SCDFrontend.DataAccess
 
         public static async Task<Installation> GetInstallation(string id)
         {
-            HttpResponseMessage response = await client.GetAsync("https://localhost:6001/api/installations/name/" + id);
+            HttpResponseMessage response = await client.GetAsync(BaseUrl + "installations/name/" + id);
 
             String res = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<Installation>(res);
@@ -42,7 +42,7 @@ namespace SCDFrontend.DataAccess
 
         public static async Task<InstallationRoot> GetLatestJson(string name)
         {
-            HttpResponseMessage response = await client.GetAsync("https://localhost:6001/api/installations/json?path=installations/"+ name + "/" + name + ".json");
+            HttpResponseMessage response = await client.GetAsync(BaseUrl + "installations/json?path=installations/"+ name + "/" + name + ".json");
 
             string res = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<InstallationRoot>(res);

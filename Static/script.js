@@ -19,3 +19,9 @@ function BlazorDownloadFileFast(name, contentType, content) {
     // We don't need to keep the url, let's release the memory
     URL.revokeObjectURL(exportUrl);
 }
+
+$(function () {
+    $('button[data-toggle="copy-modal"]').click(function (event) {
+    alert('button clicked');
+});
+});

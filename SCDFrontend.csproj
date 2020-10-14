@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.1.0-preview.7" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Web.Mvc.Expressions" Version="1.0.6" />
+    <PackageReference Include="Blazored.Modal" Version="5.1.0" />
 
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="5.0.0-rc.1.*" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="5.0.0-rc.1.*" />

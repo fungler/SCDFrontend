@@ -1,18 +1,71 @@
 @inject IJSRuntime JSRuntime
 
-<button type="button" class="btn btn-dark" @onclick="DownloadText">Launch</button>
-        <br>
-        <br>
-        <button type="button" class="btn btn-dark">Start </button>
-        <br>
-        <br>
-        <button type="button" class="btn btn-dark">Stop  </button>
-        <br>
-        <br>
-        <button type="button" class="btn btn-dark">Delete</button>
 
+
+<button type="button" class="btn btn-dark" @onclick="DownloadText">Launch</button>
+<br>
+<br>
+<button type="button" class="btn btn-dark">Start</button>
+<br>
+<br>
+<button type="button" class="btn btn-dark">Stop</button>
+<br>
+<br>
+<button type="button" id="copy" class="btn btn-dark" data-toggle="modal" data-target="#myModal" @onclick="CreateCopy">Copy</button>
+<br>
+<br>
+<button type="button" class="btn btn-dark">Delete</button>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+    
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Create copy of @Name</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            </div>
+
+            <form>
+                <div class="modal-body">
+                
+                    <div class="modal-split">
+                        <h5>Name and type of copy</h5>
+                        <label for="inst-name">Installation name:</label>
+                        <input type="text" id="inst-name" name="inst-name" placeholder="Inst-01"><br>
+                        
+	    	            <input type="radio" id="full" name="type" value="full">
+                        <label for="full">Full copy</label><br>
+                        <input type="radio" id="sparse" name="type" value="sparse">
+                        <label for="sparse">Sparse copy</label><br>
+                        <input type="radio" id="last" name="type" value="last">
+                        <label for="last">Last copy (dont remember name)</label> <br/>
+	    	        </div>
+
+	    	        <div class="modal-split">
+                        <h5>Name and type of copy</h5>
+                        <label for="lname">Clients:</label>
+                        <input type="text" id="lname" name="lname" value="Doe"><br><br>
+	    	        </div>
+
+	    	        <div class="modal-split">
+	    	            Review data
+	    	        </div>	
+
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <!-- Populated in JS ! -->
+            </div>
+        </div>
+    </div>
+</div>
+        
 
 @code {
+    [Parameter]
+    public string Name { get; set; }
     async Task DownloadText()
     {
         // Generate a text file
@@ -36,4 +89,10 @@
             await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", fileName, contentType, file);
         }
     }
+
+    async Task CreateCopy() 
+    {
+        await JSRuntime.InvokeVoidAsync("prep_modal");
+    }
 }
+

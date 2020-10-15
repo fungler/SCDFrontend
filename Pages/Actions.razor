@@ -1,6 +1,11 @@
+
+@using System.Net.Http
+@using Newtonsoft.Json.Linq
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@using SCDFrontend.Models;
+@inject HttpClient Http;
 @inject IJSRuntime JSRuntime
-
-
 
 <button type="button" class="btn btn-dark" @onclick="DownloadText">Launch</button>
 <br>
@@ -16,6 +21,7 @@
 <br>
 <button type="button" class="btn btn-dark">Delete</button>
 
+
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
     
@@ -26,34 +32,45 @@
 
             </div>
 
-            <form>
+            <EditForm Model="@_CopyInst" OnValidSubmit="Something">
+                <DataAnnotationsValidator/>
                 <div class="modal-body">
                 
                     <div class="modal-split">
-                        <h5>Name and type of copy</h5>
+                        <h5>Name and copy method:</h5>
                         <label for="inst-name">Installation name:</label>
-                        <input type="text" id="inst-name" name="inst-name" placeholder="Inst-01"><br>
-                        
-	    	            <input type="radio" id="full" name="type" value="full">
-                        <label for="full">Full copy</label><br>
-                        <input type="radio" id="sparse" name="type" value="sparse">
-                        <label for="sparse">Sparse copy</label><br>
-                        <input type="radio" id="last" name="type" value="last">
-                        <label for="last">Last copy (dont remember name)</label> <br/>
+                        <InputText id="inst-name" @bind-Value="_CopyInst.Name" placeholder="Inst-01"/><br>
+
+                        <InputRadioGroup Name="method" @bind-Value="_CopyInst.Method">
+                            @foreach (var cm in (CopyMethod[]) Enum.GetValues(typeof(CopyMethod)))
+                            {
+                                <InputRadio Value="cm" />
+                                @cm
+                                <br>
+                            }
+                        </InputRadioGroup>
 	    	        </div>
 
-	    	        <div class="modal-split">
-                        <h5>Name and type of copy</h5>
-                        <label for="lname">Clients:</label>
-                        <input type="text" id="lname" name="lname" value="Doe"><br><br>
-	    	        </div>
 
 	    	        <div class="modal-split">
-	    	            Review data
+                        <h5>Clients:</h5>
+                        <InputSelect @bind-Value="_CopyInst.Clients">
+                            @foreach (var c in clients)
+                            {
+                                <option value="@c">@c</option>
+                            }
+                        </InputSelect>
+	    	        </div>
+                    @*Hej*@
+	    	        <div class="modal-split">
+                        <h5>Review details</h5>
+	    	            Name: @_CopyInst.Name <br>
+                        Clients: @_CopyInst.Clients <br>
+                        Copy method: @_CopyInst.Method <br>
 	    	        </div>	
 
                 </div>
-            </form>
+            </EditForm>
 
             <div class="modal-footer">
                 <!-- Populated in JS ! -->
@@ -64,6 +81,11 @@
         
 
 @code {
+
+    List<string> clients = new List<string> {"DB", "BN", "Nordea", "A", "B", "C", "D"};
+
+    private CopyInst _CopyInst = new CopyInst();
+    
     [Parameter]
     public string Name { get; set; }
     async Task DownloadText()
@@ -93,6 +115,11 @@
     async Task CreateCopy() 
     {
         await JSRuntime.InvokeVoidAsync("prep_modal");
+    }
+
+    void Something() 
+    {
+
     }
 }
 

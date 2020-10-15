@@ -3,19 +3,21 @@
 @using SCDFrontend.DataAccess;
 @using SCDFrontend.Models;
 @using System.Threading.Tasks;
-@using System.Text.Json.Serialization;
 @inject IJSRuntime JSRuntime
 
 <h1>Installation: @name</h1>
-<hr/>
+<hr />
 
 
 
 <div class="row">
     <div class="column" style="background-color:#aaa;">
-        @if (Installation == null) {
+        @if (Installation == null)
+        {
             <p>Loading...</p>
-        } else{
+        }
+        else
+        {
             <h2>Info</h2>
             <p>Id: @Installation.id</p>
             <p>Name: @Installation.name</p>
@@ -29,7 +31,7 @@
     <hr />
 </div>
 <div>
-    <JsonDetails Name=@name/>
+    <JsonDetails Name=@name />
 </div>
 
 

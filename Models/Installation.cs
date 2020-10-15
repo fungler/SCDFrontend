@@ -6,7 +6,7 @@ namespace SCDFrontend.Models
 {
     [Serializable]
     public class Installation
-    {   
+    {
         public Guid id { get; set; }
         public string installation { get; set; }
         public string name { get; set; }
@@ -18,11 +18,12 @@ namespace SCDFrontend.Models
 
         public string clientNames { get; set; }
 
-        public string stringifyClients() 
+        public string stringifyClients()
         {
             string res = "";
-            clients.ForEach(c => {
-                if(!String.Equals(res, "")) 
+            clients.ForEach(c =>
+            {
+                if (!String.Equals(res, ""))
                 {
                     res += ", ";
                 }
@@ -125,7 +126,7 @@ namespace SCDFrontend.Models
         public string servicewindow { get; set; }
         public string application { get; set; }
         [JsonPropertyName("client-shortname")]
-        public string clientshortname { get; set; } 
+        public string clientshortname { get; set; }
     }
 
     public class InternationalSettings

@@ -11,7 +11,7 @@
 
 <input @bind-value="SearchTerm" @bind-value:event="oninput" placeholder="Search" />
 
-<br/>
+<br />
 
 <div>
     @if (Installations == null)
@@ -41,16 +41,16 @@
                         <td>@inst.clientNames</td>
                     </tr>
                 }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         <button type="button" class="btn btn-dark" @onclick="LoadInstallations">Refresh</button>
     }
 
-</div>
+    </div>
 
 
 
-@code {
+    @code {
     Installation installation = null;
     private void Navigate(string name)
     {
@@ -86,8 +86,8 @@
     {
         string S = SearchTerm.ToLower();
 
-    // Search for name and id
-    return i.name.ToLower().Contains(S) || i.ToString().ToLower().Contains(S);
+        // Search for name and id
+        return i.name.ToLower().Contains(S) || i.ToString().ToLower().Contains(S);
     }).ToList();
 
 

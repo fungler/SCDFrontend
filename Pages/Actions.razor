@@ -1,10 +1,9 @@
-
 @using System.Net.Http
 @using Newtonsoft.Json.Linq
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.JSInterop
-@using SCDFrontend.Models;
-@inject HttpClient Http;
+@using SCDFrontend.Models
+@inject HttpClient Http
 @inject IJSRuntime JSRuntime
 
 <button type="button" class="btn btn-dark" @onclick="DownloadText">Launch</button>
@@ -20,7 +19,8 @@
 <br>
 <br>
 <button type="button" class="btn btn-dark">Delete</button>
-
+<br>
+<br>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -36,7 +36,7 @@
                 <DataAnnotationsValidator/>
                 <div class="modal-body">
                 
-                    <div class="modal-split">
+                    <div class="modal-split" id="split-1">
                         <h5>Name and copy method:</h5>
                         <label for="inst-name">Installation name:</label>
                         <InputText id="inst-name" @bind-Value="_CopyInst.Name" placeholder="Inst-01"/><br>
@@ -52,27 +52,47 @@
 	    	        </div>
 
 
-	    	        <div class="modal-split">
+	    	        <div class="modal-split" id="split-2">
                         <h5>Clients:</h5>
-                        <InputSelect @bind-Value="_CopyInst.Clients">
-                            @foreach (var c in clients)
+                        <table>
+                            <tbody>
+                        @foreach (var item in clients)
+                        {
+
+                            <tr @onclick="@(() => AddToClients(item))">
+                                <td>
+                                    @item.Name
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                        </table>
+                        @if (_CopyInst.Clients is not null) 
+                        {
+                            @foreach (var item in _CopyInst.Clients)
                             {
-                                <option value="@c">@c</option>
+                                <p>@item.Name</p>
                             }
-                        </InputSelect>
+                        }
+                        
 	    	        </div>
-                    @*Hej*@
-	    	        <div class="modal-split">
+                    @*Not shown in the frontend, Bitcheeessss*@
+	    	        <div class="modal-split" id="split-3">
                         <h5>Review details</h5>
-	    	            Name: @_CopyInst.Name <br>
-                        Clients: @_CopyInst.Clients <br>
+	    	            Name: @_CopyInst.Name <br>                        
                         Copy method: @_CopyInst.Method <br>
+                        Clients: 
+                        @foreach (var c in _CopyInst.Clients)
+                        {
+                            @c.Name <br>
+                        }
 	    	        </div>	
 
                 </div>
             </EditForm>
 
             <div class="modal-footer">
+                
                 <!-- Populated in JS ! -->
             </div>
         </div>
@@ -82,7 +102,13 @@
 
 @code {
 
-    List<string> clients = new List<string> {"DB", "BN", "Nordea", "A", "B", "C", "D"};
+    List<Client1> clients = new List<Client1> {new Client1("Bank Nordik"), new Client1("Nordea"), new Client1("Danske Bank")};
+
+    private void AddToClients(Client1 client) 
+    {
+        _CopyInst.Clients.Add(client);
+        clients.Remove(client);
+    }
 
     private CopyInst _CopyInst = new CopyInst();
     
@@ -117,9 +143,10 @@
         await JSRuntime.InvokeVoidAsync("prep_modal");
     }
 
-    void Something() 
+    [JSInvokable]
+    public static async Task<CopyInst> Something() 
     {
-
+        return null;
     }
 }
 

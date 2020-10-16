@@ -10,7 +10,7 @@ namespace SCDFrontend.Models
         [Required]
         public string Name { get; set; }
 
-        public string Clients { get; set; }
+        public List<Client1> Clients = new List<Client1>();
 
         [Required, EnumDataType(typeof(CopyMethod))]
         public CopyMethod Method { get; set; }
@@ -18,6 +18,10 @@ namespace SCDFrontend.Models
 
     public class Client1
     {
+        public Client1(string Name)
+        {
+            this.Name = Name;
+        }
         public string Name { get; set; }
     }
 

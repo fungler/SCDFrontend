@@ -4,8 +4,10 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.JSInterop
 @using SCDFrontend.Models;
+@using SCDFrontend.DataAccess;
 @inject HttpClient Http;
 @inject IJSRuntime JSRuntime
+
 
 <button type="button" class="btn btn-dark" @onclick="DownloadText">Launch</button>
 <br>
@@ -39,9 +41,9 @@
                     <div class="modal-split">
                         <h5>Name and copy method:</h5>
                         <label for="inst-name">Installation name:</label>
-                        <InputText id="inst-name" @bind-Value="_CopyInst.Name" placeholder="Inst-01"/><br>
+                        <InputText id="inst-name" @bind-Value="_CopyInst.newName" placeholder="Inst-01"/><br>
 
-                        <InputRadioGroup Name="method" @bind-Value="_CopyInst.Method">
+                        <InputRadioGroup Name="method" @bind-Value="_CopyInst.copyMethod">
                             @foreach (var cm in (CopyMethod[]) Enum.GetValues(typeof(CopyMethod)))
                             {
                                 <InputRadio Value="cm" />
@@ -54,19 +56,39 @@
 
 	    	        <div class="modal-split">
                         <h5>Clients:</h5>
-                        <InputSelect @bind-Value="_CopyInst.Clients">
-                            @foreach (var c in clients)
+                        <table>
+                            <tbody>
+                        @foreach (var item in Clients)
+                        {
+
+                            <tr @onclick="@(() => AddToClients(item))">
+                                <td>
+                                    @item.name
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                        </table>
+                        @if (_CopyInst.clients is not null) 
+                        {
+                            @foreach (var item in _CopyInst.clients)
                             {
-                                <option value="@c">@c</option>
+                                <p>@item.name</p>
                             }
-                        </InputSelect>
+                        }
+                        
 	    	        </div>
                     @*Hej*@
 	    	        <div class="modal-split">
                         <h5>Review details</h5>
-	    	            Name: @_CopyInst.Name <br>
-                        Clients: @_CopyInst.Clients <br>
-                        Copy method: @_CopyInst.Method <br>
+	    	            Name: @_CopyInst.oldName <br>                        
+                        Copy method: @_CopyInst.copyMethod <br>
+                        Clients: 
+                        @foreach (var c in _CopyInst.clients)
+                        {
+                            @c.name <br>
+                        }
+                        <button type="submit" @onclick="CreateCopy1">Submit</button>
 	    	        </div>	
 
                 </div>
@@ -82,12 +104,19 @@
 
 @code {
 
-    List<string> clients = new List<string> {"DB", "BN", "Nordea", "A", "B", "C", "D"};
+    List<Client1> Clients = new List<Client1> {
+        new Client1("Danske Bank"), 
+        new Client1("Bank Nordik"), 
+        new Client1("Spar Nord"), 
+        new Client1("Nordea"), 
+        new Client1("Arbejdernes Landsbank"), 
+    };
 
     private CopyInst _CopyInst = new CopyInst();
     
     [Parameter]
     public string Name { get; set; }
+    
     async Task DownloadText()
     {
         // Generate a text file
@@ -115,6 +144,18 @@
     async Task CreateCopy() 
     {
         await JSRuntime.InvokeVoidAsync("prep_modal");
+    }
+
+    private void AddToClients(Client1 client) 
+    {
+        _CopyInst.clients.Add(client);
+        Clients.Remove(client);
+    }
+
+    async Task CreateCopy1() 
+    {
+        _CopyInst.oldName = Name;
+        ApiConnector.createCopy(_CopyInst);
     }
 
     void Something() 

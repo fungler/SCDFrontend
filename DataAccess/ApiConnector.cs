@@ -6,6 +6,8 @@ using System;
 using System.Threading.Tasks;
 using SCDFrontend.Models;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace SCDFrontend.DataAccess
 {
@@ -46,6 +48,14 @@ namespace SCDFrontend.DataAccess
 
             string res = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<InstallationRoot>(res);
+        }
+
+        public static async Task<HttpResponseMessage> createCopy(CopyInst copy)
+        {
+            var json = JsonConvert.SerializeObject(copy);
+            var response = await client.PostAsync(BaseUrl + "installations/json/copy", new StringContent(json, Encoding.UTF8, "application/json"));
+            Console.Write(response);
+            return response;
         }
     }
 }

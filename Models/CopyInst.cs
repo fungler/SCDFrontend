@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System;
+using System.ComponentModel;
 
 namespace SCDFrontend.Models
 {
@@ -19,7 +20,7 @@ namespace SCDFrontend.Models
         public List<Client1> clients = new List<Client1>();
 
         [Required, EnumDataType(typeof(CopyMethod))]
-        public CopyMethod copyMethod { get; set; }
+        public string copyMethod { get; set; }
     }
 
     [Serializable]
@@ -36,7 +37,9 @@ namespace SCDFrontend.Models
     public enum CopyMethod
     {
         Full,
+
         Sparse,
+
         Cold
     }
 }

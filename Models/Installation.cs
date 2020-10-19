@@ -16,6 +16,8 @@ namespace SCDFrontend.Models
         public string subscription { get; set; }
         public List<Client> clients { get; set; }
 
+        public string copyMethod { get; set; }
+
         public string clientNames { get; set; }
 
         public string stringifyClients()

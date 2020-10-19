@@ -27,6 +27,7 @@
                     <th @onclick="@(() => SortData("NAME"))" scope="col">Name</th>
                     <th scope="col">IP</th>
                     <th scope="col">Subscription ID</th>
+                    <th scope="col">Copy Method</th>
                     <th scope="col">Clients</th>
                 </tr>
             </thead>
@@ -38,6 +39,7 @@
                         <td>@inst.name</td>
                         <td>@inst.fullAddress</td>
                         <td>@inst.subscription</td>
+                        <td>@inst.copyMethod</td>
                         <td>@inst.clientNames</td>
                     </tr>
                 }

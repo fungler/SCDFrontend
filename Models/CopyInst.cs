@@ -12,12 +12,18 @@ namespace SCDFrontend.Models
         [Required]
         public string oldName { get; set; }
 
+        [Required]
         public Client client { get; set; }
 
         [Required, EnumDataType(typeof(CopyMethod))]
         public string copyMethod { get; set; }
 
+        [Required]
+        public Subscription subscription { get; set; }
+
         public string clientId { get; set; }
+
+        public string subId { get; set; }
     }
 
     [Serializable]

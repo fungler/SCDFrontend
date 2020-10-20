@@ -77,6 +77,22 @@
 	    	        </div>
                     @*Hej*@
 
+                    <div class="modal-split">
+                        <h5>Choose subscription:</h5>
+                        <select class="custom-select" id="inst-client" @bind="_CopyInst.subId">
+                            @if(Subs == null)
+                            {
+                                <option>Loading subscriptions</option>
+                            } 
+                            else 
+                            {
+                                @foreach (var s in Subs)
+                                {
+                                    <option value="@s.id">@s.name</option>
+                                }
+                            }
+                        </select>
+	    	        </div>
 
 
 	    	        <div class="modal-split">
@@ -100,22 +116,27 @@
 
 @code {
     List<Client> Clients = null;
-    string ClientId;
-
+    List<Subscription> Subs = null;
     private CopyInst _CopyInst = new CopyInst();
     
     [Parameter]
     public string Name { get; set; }
-
     protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
     {
         await LoadClients();
+        await LoadSub();
     }
 
     public async Task LoadClients()
     {
         Clients = null;
         Clients = await ApiConnector.GetClients();
+    }
+
+    public async Task LoadSub() 
+    {
+        Subs = null;
+        Subs = await ApiConnector.GetSubscriptions();
     }
     
     async Task DownloadText()
@@ -158,6 +179,15 @@
             {
                 _CopyInst.client = c;
                 Console.WriteLine(c.id + " " + c.name);
+            }
+        }
+
+        foreach(var s in Subs)
+        {
+            if(_CopyInst.subId == s.id)
+            {
+                _CopyInst.subscription = s;
+                Console.WriteLine(s.id + " " + s.name);
             }
         }
 

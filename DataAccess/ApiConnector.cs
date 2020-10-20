@@ -67,5 +67,19 @@ namespace SCDFrontend.DataAccess
             }
             return cl;
         }
+
+
+        public static async Task<List<Subscription>> GetSubscriptions()
+        {
+            List<Subscription> cl = new List<Subscription>();
+            HttpResponseMessage response = await client.GetAsync(BaseUrl + "installations/subscriptions/all");
+            if (response.IsSuccessStatusCode)
+            {
+                String res = await response.Content.ReadAsStringAsync();
+                cl = JsonConvert.DeserializeObject<List<Subscription>>(res);
+
+            }
+            return cl;
+        }
     }
 }

@@ -121,7 +121,7 @@
     async Task DownloadText()
     {
         // Generate a text file
-        byte[] file = System.Text.Encoding.UTF8.GetBytes("full address:s:20.52.46.188:3389\nprompt for credentials:i:1\nadministrative session:i:1");
+        byte[] file = System.Text.Encoding.UTF8.GetBytes("full address:s:20.52.144.65:3389\nprompt for credentials:i:1\nadministrative session:i:1");
         await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "connect.rdp", "text/plain", file);
     }
     async Task DownloadBinary()

@@ -34,9 +34,9 @@
                 {
                     <tr @onclick="@(() => Navigate(inst.name.ToString()))">
                         <td>@inst.name</td>
-                        <td>@inst.subscription</td>
+                        <td>@inst.subscription?.name</td>
                         <td>@inst.copyMethod</td>
-                        <td>@inst.clientNames</td>
+                        <td>@inst.client.name</td>
                     </tr>
                 }
             </tbody>

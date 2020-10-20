@@ -13,34 +13,24 @@ namespace SCDFrontend.Models
 
         public string fullAddress { get; set; }
 
-        public string subscription { get; set; }
-        public List<Client> clients { get; set; }
+        public Subscription subscription { get; set; }
+        public Client client { get; set; }
 
         public string copyMethod { get; set; }
+    }
 
-        public string clientNames { get; set; }
-
-        public string stringifyClients()
-        {
-            string res = "";
-            clients.ForEach(c =>
-            {
-                if (!String.Equals(res, ""))
-                {
-                    res += ", ";
-                }
-                res += c.name;
-            });
-
-            return res;
-        }
+    [Serializable]
+    public class Subscription
+    {
+        public string name { get; set; }
+        public string id { get; set; }
     }
 
     [Serializable]
     public class Client
     {
         public string name { get; set; }
-        public Guid id { get; }
+        public string id { get; set; }
     }
     public class Network
     {

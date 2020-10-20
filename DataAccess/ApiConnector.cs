@@ -25,12 +25,10 @@ namespace SCDFrontend.DataAccess
             Console.WriteLine("Before");
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine(response.StatusCode);
                 String res = await response.Content.ReadAsStringAsync();
                 installations = JsonConvert.DeserializeObject<List<Installation>>(res);
 
             }
-            Console.Write(installations);
             return installations;
         }
 
@@ -54,8 +52,20 @@ namespace SCDFrontend.DataAccess
         {
             var json = JsonConvert.SerializeObject(copy);
             var response = await client.PostAsync(BaseUrl + "installations/json/copy", new StringContent(json, Encoding.UTF8, "application/json"));
-            Console.Write(response);
             return response;
+        }
+
+        public static async Task<List<Client>> GetClients()
+        {
+            List<Client> cl = new List<Client>();
+            HttpResponseMessage response = await client.GetAsync(BaseUrl + "installations/clients/all");
+            if (response.IsSuccessStatusCode)
+            {
+                String res = await response.Content.ReadAsStringAsync();
+                cl = JsonConvert.DeserializeObject<List<Client>>(res);
+
+            }
+            return cl;
         }
     }
 }

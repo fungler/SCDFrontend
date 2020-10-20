@@ -60,39 +60,30 @@
 
 
 	    	        <div class="modal-split">
-                        <h5>Clients:</h5>
-                        <table>
-                            <tbody>
-                        @foreach (var item in Clients)
-                        {
-
-                            <tr @onclick="@(() => AddToClients(item))">
-                                <td>
-                                    @item.name
-                                </td>
-                            </tr>
-                        }
-                        </tbody>
-                        </table>
-                        @if (_CopyInst.clients is not null) 
-                        {
-                            @foreach (var item in _CopyInst.clients)
+                        <h5>Choose client:</h5>
+                        <select class="custom-select" id="inst-client" @bind="_CopyInst.clientId">
+                            @if(Clients == null)
                             {
-                                <p>@item.name</p>
+                                <option>Loading clients</option>
+                            } 
+                            else 
+                            {
+                                @foreach (var c in Clients)
+                                {
+                                    <option value="@c.id">@c.name</option>
+                                }
                             }
-                        }
-                        
+                        </select>
 	    	        </div>
                     @*Hej*@
+
+
+
 	    	        <div class="modal-split">
                         <h5>Review details</h5>
 	    	            Name: @_CopyInst.oldName <br>                        
                         Copy method: @_CopyInst.copyMethod <br>
-                        Clients: 
-                        @foreach (var c in _CopyInst.clients)
-                        {
-                            @c.name <br>
-                        }
+                        Client: @_CopyInst.client<br>
                         <button type="submit" @onclick="CreateCopy1">Submit</button>
 	    	        </div>	
 
@@ -108,19 +99,24 @@
         
 
 @code {
-
-    List<Client1> Clients = new List<Client1> {
-        new Client1("Danske Bank"), 
-        new Client1("Bank Nordik"), 
-        new Client1("Spar Nord"), 
-        new Client1("Nordea"), 
-        new Client1("Arbejdernes Landsbank"), 
-    };
+    List<Client> Clients = null;
+    string ClientId;
 
     private CopyInst _CopyInst = new CopyInst();
     
     [Parameter]
     public string Name { get; set; }
+
+    protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
+    {
+        await LoadClients();
+    }
+
+    public async Task LoadClients()
+    {
+        Clients = null;
+        Clients = await ApiConnector.GetClients();
+    }
     
     async Task DownloadText()
     {
@@ -151,21 +147,31 @@
         await JSRuntime.InvokeVoidAsync("prep_modal");
     }
 
-    private void AddToClients(Client1 client) 
-    {
-        _CopyInst.clients.Add(client);
-        Clients.Remove(client);
-    }
-
     async Task CreateCopy1() 
     {
         _CopyInst.oldName = Name;
+        Console.WriteLine("Client id" + _CopyInst.clientId);
+        // InputSelect cannot handle objects
+        foreach(var c in Clients)
+        {
+            if(_CopyInst.clientId == c.id)
+            {
+                _CopyInst.client = c;
+                Console.WriteLine(c.id + " " + c.name);
+            }
+        }
+
         await ApiConnector.createCopy(_CopyInst);
     }
 
     void Something() 
     {
 
+    }
+
+    async Task<List<Client>> GetClients()
+    {
+        return await ApiConnector.GetClients();
     }
 }
 

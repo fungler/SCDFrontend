@@ -1,10 +1,5 @@
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Components;
-using System.Net.Http;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System;
-using System.ComponentModel;
 
 namespace SCDFrontend.Models
 {
@@ -17,20 +12,12 @@ namespace SCDFrontend.Models
         [Required]
         public string oldName { get; set; }
 
-        public List<Client1> clients = new List<Client1>();
+        public Client client { get; set; }
 
         [Required, EnumDataType(typeof(CopyMethod))]
         public string copyMethod { get; set; }
-    }
 
-    [Serializable]
-    public class Client1
-    {
-        public Client1(string name)
-        {
-            this.name = name;
-        }
-        public string name { get; set; }
+        public string clientId { get; set; }
     }
 
     [Serializable]

@@ -47,7 +47,7 @@ app {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(180deg,rgb(108, 157, 249) 0%, #e6e600 70%);
 }
 
     .sidebar .top-row {
@@ -205,4 +205,6 @@ app {
     
     .tab4 { display: inline-block; 
         margin-left: 160px;  }
+    
 }
+

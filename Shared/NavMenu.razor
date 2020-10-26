@@ -1,27 +1,66 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@using SCDFrontend.DataAccess
+@using SCDFrontend.Models
+@using Microsoft.AspNetCore.Components
+@using MatBlazor
+@inject NavigationManager NavigationManager;
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">SCDFrontend</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Installations
-            </NavLink>
-        </li>
-    </ul>
-</div>
+<MatNavMenu id="nav-menu" Multi="true" Class="app-sidebar">
+    <MatNavSubMenu @bind-Expanded="@navSubMenuOpenState">
+        <MatNavSubMenuHeader>
+            <MatNavItem AllowSelection="false"><MatIcon Icon="all_inbox"></MatIcon>&nbsp; Subscriptions </MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            @if(subscriptions == null) 
+            {
+                <p>Loading...</p>
+            }
+            else {
+                @foreach (var sub in subscriptions)
+                {
+                    var param = "/" + sub.name.Replace(" ", "-");
+                    <MatNavItem Href="@param" OnClick="@(() => HandleClick(param))" class="nav-item">
+                        <MatIcon Icon="grade"></MatIcon>&nbsp;
+                        @sub.name
+                    </MatNavItem>
+                }
+            }
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
+    <MatNavItem Href="/"><MatIcon Icon="all_inbox"></MatIcon>All Installations</MatNavItem>
+</MatNavMenu>
 
 @code {
     private bool collapseNavMenu = true;
+    bool navSubMenuOpenState = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private List<Subscription> subscriptions { get; set; }
+
+    public async Task GetSubscriptions()
+    {
+        subscriptions = await ApiConnector.GetSubscriptions();
+    }
+
+    protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
+    {
+        await GetSubscriptions();
+    }
+
+    private void HandleClick(string path)
+    {
+        NavigationManager.NavigateTo(path, true);
     }
 }

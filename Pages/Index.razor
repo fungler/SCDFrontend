@@ -2,127 +2,38 @@
 
 @using SCDFrontend.DataAccess;
 @using SCDFrontend.Models;
-@inject NavigationManager NavigationManager;
+
 
 <head>
 </head>
 <h1>Installations</h1>
 <hr />
 
-<input @bind-value="SearchTerm" @bind-value:event="oninput" placeholder="Search" />
-
-<br/>
-
 <div>
-    @if (Installations == null)
+    @if (Installations is not null)
     {
-        <h1><em>Loading...</em></h1>
+        <InstallationList Installations=@Installations/>
     }
     else
     {
-        <table class="table table-hover table-dark">
-            <thead>
-                <tr>
-                    <th @onclick="@(() => SortData("NAME"))" scope="col">Name</th>
-                    <th scope="col">Subscription ID</th>
-                    <th scope="col">Copy Method</th>
-                    <th scope="col">Client</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (Installation inst in Filtered)
-                {
-                    <tr @onclick="@(() => Navigate(inst.name.ToString()))">
-                        <td>@inst.name</td>
-                        <td>@inst.subscription?.name</td>
-                        <td>@inst.copyMethod</td>
-                        <td>@inst.client.name</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        <button type="button" class="btn btn-dark" @onclick="LoadInstallations">Refresh</button>
+        <h1><em>Loading...</em></h1>
     }
-
 </div>
 
+<button type="button" class="btn btn-dark" @onclick="@(() => LoadInstallations())">Refresh</button>
 
 
 @code {
-    Installation installation = null;
-    private void Navigate(string name)
-    {
-
-        NavigationManager.NavigateTo("/inst/" + name);
-    }
-
-
-    public async Task LoadInstallation(string name)
-    {
-        installation = null;
-        installation = await ApiConnector.GetInstallation(name);
-    }
-
-    private List<Installation> Installations = null;
+    public List<Installation> Installations { get; set; }
 
     // Load data from database
-    public async Task LoadInstallations()
+    public async Task<List<Installation>> LoadInstallations()
     {
-        Installations = null;
-        Installations = await ApiConnector.GetInstallations();
+        return await ApiConnector.GetInstallations();
     }
 
     protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
     {
-        await LoadInstallations();
-    }
-
-    // Search
-    string SearchTerm { get; set; } = "";
-
-    List<Installation> Filtered => Installations.Where(i =>
-    {
-        string S = SearchTerm.ToLower();
-
-    // Search for name and id
-    return i.name.ToLower().Contains(S) || i.ToString().ToLower().Contains(S);
-    }).ToList();
-
-    // Order
-    // Works but not very pretty
-    bool isSortedAscending = true;
-    string activeSortColumn = "";
-
-    private void SortData(string columnName)
-    {
-        List<Installation> SortedInst = new List<Installation>();
-        switch (columnName)
-        {
-            case "ID":
-                if (isSortedAscending)
-                {
-                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
-                    isSortedAscending = false;
-                }
-                else
-                {
-                    Installations = Filtered.OrderBy(i => i.id).ToList();
-                    isSortedAscending = true;
-                }
-                break;
-
-            case "NAME":
-                if (isSortedAscending)
-                {
-                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
-                    isSortedAscending = false;
-                }
-                else
-                {
-                    Installations = Filtered.OrderBy(i => i.id).ToList();
-                    isSortedAscending = true;
-                }
-                break;
-        }
+        Installations = await LoadInstallations();
     }
 }

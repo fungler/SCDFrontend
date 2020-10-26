@@ -1,0 +1,113 @@
+@using SCDFrontend.Models;
+@using SCDFrontend.DataAccess;
+@using System.Net.Http
+@using Newtonsoft.Json.Linq
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@using System.ComponentModel;
+@inject NavigationManager NavigationManager;
+@inject HttpClient Http;
+
+<div class="active-purple-3 active-purple-4 mb-4">
+  <input class="form-control" type="text" placeholder="Search" aria-label="Search for installation" @bind-value="SearchTerm" @bind-value:event="oninput">
+</div>
+
+<br/>
+
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <th @onclick="@(() => SortData("NAME"))" scope="col">Name</th>
+            <th scope="col">Subscription Name</th>
+            <th scope="col">Copy Method</th>
+            <th scope="col">Client</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Installation inst in Filtered)
+        {
+            <tr @onclick="@(() => Navigate(inst.name.ToString()))">
+                <td>@inst.name</td>
+                <td>@inst.subscription?.name</td>
+                <td>@inst.copyMethod</td>
+                <td>@inst.client.name</td>
+            </tr>           
+        }
+    </tbody>
+</table>
+
+@code 
+{
+    
+
+    [Parameter]
+    public List<Installation> Installations { get; set; }
+    
+    Installation installation = null;
+
+    public async Task LoadInstallation(string name)
+    {
+        installation = null;
+        installation = await ApiConnector.GetInstallation(name);
+    }
+    private void Navigate(string name)
+    {
+
+        NavigationManager.NavigateTo("/inst/" + name);
+    }
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        base.ShouldRender();
+        await base.SetParametersAsync(parameters);
+    }
+
+    // Search
+    string SearchTerm { get; set; } = "";
+
+    List<Installation> Filtered => Installations.Where(i =>
+    {
+        string S = SearchTerm.ToLower();
+
+        // Search for name and id
+        return i.name.ToLower().Contains(S) || i.ToString().ToLower().Contains(S);
+    }).ToList();
+
+    // Order
+    // Works but not very pretty
+    bool isSortedAscending = true;
+    string activeSortColumn = "";
+
+    private void SortData(string columnName)
+    {
+        List<Installation> SortedInst = new List<Installation>();
+        switch (columnName)
+        {
+            case "ID":
+                if (isSortedAscending)
+                {
+                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
+                    isSortedAscending = false;
+                }
+                else
+                {
+                    Installations = Filtered.OrderBy(i => i.id).ToList();
+                    isSortedAscending = true;
+                }
+                break;
+
+            case "NAME":
+                if (isSortedAscending)
+                {
+                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
+                    isSortedAscending = false;
+                }
+                else
+                {
+                    Installations = Filtered.OrderBy(i => i.id).ToList();
+                    isSortedAscending = true;
+                }
+                break;
+        }
+    }
+}

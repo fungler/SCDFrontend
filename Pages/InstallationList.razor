@@ -8,106 +8,81 @@
 @inject NavigationManager NavigationManager;
 @inject HttpClient Http;
 
-<div class="active-purple-3 active-purple-4 mb-4">
-  <input class="form-control" type="text" placeholder="Search" aria-label="Search for installation" @bind-value="SearchTerm" @bind-value:event="oninput">
-</div>
-
-<br/>
-
-<table class="table table-hover table-dark">
-    <thead>
-        <tr>
-            <th @onclick="@(() => SortData("NAME"))" scope="col">Name</th>
-            <th scope="col">Subscription Name</th>
-            <th scope="col">Copy Method</th>
-            <th scope="col">Client</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (Installation inst in Filtered)
-        {
-            <tr @onclick="@(() => Navigate(inst.name.ToString()))">
-                <td>@inst.name</td>
-                <td>@inst.subscription?.name</td>
-                <td>@inst.copyMethod</td>
-                <td>@inst.client.name</td>
-            </tr>           
-        }
-    </tbody>
-</table>
+<tbody>
+    @foreach (Installation inst in Installations)
+    {
+        <tr @onclick="@(() => Navigate(inst.name.ToString()))">
+            <td>@inst.name</td>
+            <td>@inst.subscription?.name</td>
+            <td>@inst.copyMethod</td>
+            <td>@inst.client.name</td>
+        </tr>           
+    }
+</tbody>
 
 @code 
 {
-    
+    [Parameter]
+    public List<Installation> AllInstallations { get; set; }
 
     [Parameter]
+    public string sub { get; set; }
+
+    public string subNamePretty { get; set; }
+
     public List<Installation> Installations { get; set; }
     
-    Installation installation = null;
-
-    public async Task LoadInstallation(string name)
-    {
-        installation = null;
-        installation = await ApiConnector.GetInstallation(name);
-    }
     private void Navigate(string name)
     {
 
         NavigationManager.NavigateTo("/inst/" + name);
     }
 
-    public override async Task SetParametersAsync(ParameterView parameters)
+    protected override void OnInitialized()
     {
-        base.ShouldRender();
-        await base.SetParametersAsync(parameters);
+        Console.WriteLine("sub");
+        Installations = new List<Installation>();
+        if(sub.Equals("All Installations"))
+        {
+            Console.WriteLine(sub);
+            Installations = AllInstallations;
+            Console.WriteLine(AllInstallations.Count);
+        }
+        else 
+        {
+            Console.WriteLine(AllInstallations.Count);
+            subNamePretty = sub.Replace("-", " ");
+            foreach(var inst in AllInstallations)
+            {
+                if(inst.subscription.name.Equals(subNamePretty))
+                {
+                    Installations.Add(inst);
+                }
+            }
+        }
+        
     }
 
-    // Search
-    string SearchTerm { get; set; } = "";
-
-    List<Installation> Filtered => Installations.Where(i =>
+    protected override bool ShouldRender()
     {
-        string S = SearchTerm.ToLower();
-
-        // Search for name and id
-        return i.name.ToLower().Contains(S) || i.ToString().ToLower().Contains(S);
-    }).ToList();
-
-    // Order
-    // Works but not very pretty
-    bool isSortedAscending = true;
-    string activeSortColumn = "";
-
-    private void SortData(string columnName)
-    {
-        List<Installation> SortedInst = new List<Installation>();
-        switch (columnName)
+        if(string.IsNullOrEmpty(sub) || sub.Equals("All Installations"))
         {
-            case "ID":
-                if (isSortedAscending)
-                {
-                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
-                    isSortedAscending = false;
-                }
-                else
-                {
-                    Installations = Filtered.OrderBy(i => i.id).ToList();
-                    isSortedAscending = true;
-                }
-                break;
-
-            case "NAME":
-                if (isSortedAscending)
-                {
-                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
-                    isSortedAscending = false;
-                }
-                else
-                {
-                    Installations = Filtered.OrderBy(i => i.id).ToList();
-                    isSortedAscending = true;
-                }
-                break;
+            sub = "All Installations";
+            Installations = AllInstallations;
         }
+        else
+        {
+        subNamePretty = sub.Replace("-", " ");
+        Installations = new List<Installation>();
+        foreach(var i in AllInstallations)
+        {
+            if(i.subscription.name.Equals(subNamePretty))
+            {
+                Installations.Add(i);
+            }
+        }
+        }
+        Console.WriteLine("ShouldRender InstallationList");
+        return true;
     }
 }

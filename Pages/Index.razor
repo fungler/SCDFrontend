@@ -1,4 +1,5 @@
 ﻿@page "/"
+@page "/{sub}"
 
 @using SCDFrontend.DataAccess;
 @using SCDFrontend.Models;
@@ -6,25 +7,51 @@
 
 <head>
 </head>
-<h1>Installations</h1>
+
+@if(string.IsNullOrEmpty(sub))
+{
+    <h1>All Installations</h1>
+}
+else
+{
+    <h1>@sub.Replace("-"," ") </h1>
+}
 <hr />
 
+<div class="active-purple-3 active-purple-4 mb-4">
+  <input class="form-control" type="text" placeholder="Search" aria-label="Search for installation" @bind-value="SearchTerm" @bind-value:event="oninput">
+</div>
+
+<br>
+
 <div>
+    <table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Subscription Name</th>
+            <th scope="col">Copy Method</th>
+            <th scope="col">Client</th>
+        </tr>
+    </thead>
     @if (Installations is not null)
     {
-        <InstallationList Installations=@Installations/>
+        <InstallationList AllInstallations=@Installations sub=@sub/>
     }
-    else
-    {
-        <h1><em>Loading...</em></h1>
-    }
+    </table>
 </div>
 
 <button type="button" class="btn btn-dark" @onclick="@(() => LoadInstallations())">Refresh</button>
 
 
 @code {
+    [Parameter]
+    public string sub { get; set; }
+
+    protected string SearchTerm { get; set; } = "";
+
     public List<Installation> Installations { get; set; }
+    //public List<Installation> ShownInstallations { get; set; }
 
     // Load data from database
     public async Task<List<Installation>> LoadInstallations()
@@ -35,5 +62,62 @@
     protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
     {
         Installations = await LoadInstallations();
+    }
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("On init");
+        Installations = new List<Installation>();
+        //ShownInstallations = new List<Installation>();
+        if(string.IsNullOrEmpty(sub))
+        {
+            sub = "All Installations";
+        }
+    }
+
+
+    // Search
+    bool isSortedAscending = true;
+    string activeSortColumn = "";
+
+    List<Installation> Filtered => Installations.Where(i =>
+    {
+        string S = SearchTerm.ToLower();
+
+        // Search for name and id
+        return i.name.ToLower().Contains(S) || i.ToString().ToLower().Contains(S);
+    }).ToList();
+
+    private void SortData(string columnName)
+    {
+        List<Installation> SortedInst = new List<Installation>();
+        switch (columnName)
+        {
+            case "ID":
+                if (isSortedAscending)
+                {
+                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
+                    isSortedAscending = false;
+                }
+                else
+                {
+                    Installations = Filtered.OrderBy(i => i.id).ToList();
+                    isSortedAscending = true;
+                }
+                break;
+
+            case "NAME":
+                if (isSortedAscending)
+                {
+                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
+                    isSortedAscending = false;
+                }
+                else
+                {
+                    Installations = Filtered.OrderBy(i => i.id).ToList();
+                    isSortedAscending = true;
+                }
+                break;
+        }
     }
 }

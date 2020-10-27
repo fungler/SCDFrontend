@@ -12,10 +12,10 @@
 <button type="button" class="btn btn-dark" >Launch</button>
 <br>
 <br>
-<button type="button" class="btn btn-dark">Start</button>
+<button type="button" class="btn btn-dark" @onclick="StartInst">Start</button>
 <br>
 <br>
-<button type="button" class="btn btn-dark">Stop</button>
+<button type="button" class="btn btn-dark" @onclick="StopInst">Stop</button>
 <br>
 <br>
 <button type="button" id="copy" class="btn btn-dark" data-toggle="modal" data-target="#myModal" @onclick="CreateCopy">Copy</button>
@@ -201,6 +201,23 @@
     async Task<List<Client>> GetClients()
     {
         return await ApiConnector.GetClients();
+    }
+
+    async Task StartInst()
+    {
+        await ApiConnector.Start(Name);
+        base.ShouldRender();
+    }
+
+    async Task StopInst()
+    {
+        await ApiConnector.Stop(Name);
+        base.ShouldRender();
+    }
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        await base.SetParametersAsync(parameters);
     }
 }
 

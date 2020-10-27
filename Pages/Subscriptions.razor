@@ -1,6 +1,5 @@
 @using SCDFrontend.DataAccess;
 @using SCDFrontend.Models;
-@implements IDisposable;
 @page "/{sub}"
 
 <head>
@@ -70,10 +69,5 @@
         }
         Console.WriteLine("ShouldRender");
         return true;
-    }
-
-    public void Dispose()
-    {
-     Console.WriteLine("I Have Been Disposed FUCK");
     }
 }

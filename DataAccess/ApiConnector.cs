@@ -81,5 +81,17 @@ namespace SCDFrontend.DataAccess
             }
             return cl;
         }
+
+        public static async Task<HttpResponseMessage> Start(string name)
+        {
+            var res = await client.GetAsync(BaseUrl + "installations/start?name=" + name);
+            return res;
+        }
+
+        public static async Task<HttpResponseMessage> Stop(string name)
+        {
+            var res = await client.GetAsync(BaseUrl + "installations/stop?name=" + name);
+            return res;
+        }
     }
 }

@@ -22,6 +22,7 @@
             <p>Name: @Installation.name</p>
             <p>Subscription: @Installation.subscription.name</p>
             <p>Client: @Installation.client.name</p>
+            <p>Status: @Installation.status</p>
         }
     </div>
     <div class="column" style="background-color:#bbb;">
@@ -47,6 +48,13 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine("Oninitasyc");
         await LoadInstallation(name);
+    }
+
+    protected override bool ShouldRender()
+    {
+        Console.WriteLine("Should Render");
+        return true;
     }
 }

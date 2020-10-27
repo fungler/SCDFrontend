@@ -17,6 +17,8 @@ namespace SCDFrontend.Models
         public Client client { get; set; }
 
         public string copyMethod { get; set; }
+
+        public string status { get; set; }
     }
 
     [Serializable]

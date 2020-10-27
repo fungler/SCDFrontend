@@ -3,6 +3,7 @@
 
 @using SCDFrontend.DataAccess;
 @using SCDFrontend.Models;
+@inject NavigationManager NavigationManager;
 
 
 <head>
@@ -34,9 +35,19 @@ else
             <th scope="col">Client</th>
         </tr>
     </thead>
-    @if (Installations is not null)
+    @if (ShownInstallations is not null)
     {
-        <InstallationList AllInstallations=@Installations sub=@sub/>
+        <tbody>
+        @foreach (Installation inst in Filtered)
+        {
+            <tr @onclick="@(() => Navigate(inst.name.ToString()))">
+                <td>@inst.name</td>
+                <td>@inst.subscription?.name</td>
+                <td>@inst.copyMethod</td>
+                <td>@inst.client.name</td>
+            </tr>           
+        }
+        </tbody>
     }
     </table>
 </div>
@@ -50,8 +61,8 @@ else
 
     protected string SearchTerm { get; set; } = "";
 
-    public List<Installation> Installations { get; set; }
-    //public List<Installation> ShownInstallations { get; set; }
+    public List<Installation> AllInstallations { get; set; }
+    public List<Installation> ShownInstallations { get; set; }
 
     // Load data from database
     public async Task<List<Installation>> LoadInstallations()
@@ -61,18 +72,68 @@ else
 
     protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
     {
-        Installations = await LoadInstallations();
+        AllInstallations = await LoadInstallations();
+
+        if(string.IsNullOrEmpty(sub) || sub.Equals("All Installations"))
+        {   
+            sub = "All Installations";
+            ShownInstallations = AllInstallations;
+        }
+        else
+        {
+            foreach(var inst in AllInstallations)
+            {
+                if(inst.subscription.name.Equals(sub.Replace("-"," "))) {
+                    ShownInstallations.Add(inst);
+                }
+            }
+        }
     }
 
     protected override void OnInitialized()
     {
-        Console.WriteLine("On init");
-        Installations = new List<Installation>();
-        //ShownInstallations = new List<Installation>();
-        if(string.IsNullOrEmpty(sub))
-        {
+        ShownInstallations = new List<Installation>();
+        AllInstallations = new List<Installation>();
+        if(string.IsNullOrEmpty(sub) || sub.Equals("All Installations"))
+        {   
             sub = "All Installations";
+            ShownInstallations = AllInstallations;
         }
+        else
+        {
+            foreach(var inst in AllInstallations)
+            {
+                if(inst.subscription.name.Equals(sub.Replace("-"," "))) {
+                    ShownInstallations.Add(inst);
+                }
+            }
+        }
+    }
+
+    protected override bool ShouldRender()
+    {
+        ShownInstallations = new List<Installation>();
+        if(string.IsNullOrEmpty(sub) || sub.Equals("All Installations"))
+        {   
+            sub = "All Installations";
+            ShownInstallations = AllInstallations;
+        }
+        else
+        {
+            foreach(var inst in AllInstallations)
+            {
+                if(inst.subscription.name.Equals(sub.Replace("-"," "))) {
+                    ShownInstallations.Add(inst);
+                }
+            }
+        }
+        return true;
+    }
+
+    private void Navigate(string name)
+    {
+
+        NavigationManager.NavigateTo("/inst/" + name);
     }
 
 
@@ -80,7 +141,12 @@ else
     bool isSortedAscending = true;
     string activeSortColumn = "";
 
-    List<Installation> Filtered => Installations.Where(i =>
+    private void Search()
+    {
+        
+    }
+
+    List<Installation> Filtered => ShownInstallations.Where(i =>
     {
         string S = SearchTerm.ToLower();
 
@@ -96,12 +162,12 @@ else
             case "ID":
                 if (isSortedAscending)
                 {
-                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
+                    ShownInstallations = ShownInstallations.OrderByDescending(i => i.id).ToList();
                     isSortedAscending = false;
                 }
                 else
                 {
-                    Installations = Filtered.OrderBy(i => i.id).ToList();
+                   ShownInstallations = ShownInstallations.OrderBy(i => i.id).ToList();
                     isSortedAscending = true;
                 }
                 break;
@@ -109,15 +175,16 @@ else
             case "NAME":
                 if (isSortedAscending)
                 {
-                    Installations = Filtered.OrderByDescending(i => i.id).ToList();
+                    ShownInstallations = ShownInstallations.OrderByDescending(i => i.id).ToList();
                     isSortedAscending = false;
                 }
                 else
                 {
-                    Installations = Filtered.OrderBy(i => i.id).ToList();
+                    ShownInstallations = ShownInstallations.OrderBy(i => i.id).ToList();
                     isSortedAscending = true;
                 }
                 break;
         }
     }
+    
 }

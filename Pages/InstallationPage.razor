@@ -26,7 +26,7 @@
         }
     </div>
     <div class="column" style="background-color:#bbb;">
-        <Actions Name=@name />
+        <Actions Name=@name OnChangedStatus=@OnChangedStatus />
     </div>
     <hr />
 </div>
@@ -39,22 +39,16 @@
     [Parameter]
     public string name { get; set; }
 
-    private Installation Installation = null;
-
-    public async Task LoadInstallation(string instId)
-    {
-        Installation = await ApiConnector.GetInstallation(instId);
-    }
+    private Installation Installation;
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("Oninitasyc");
-        await LoadInstallation(name);
+        Installation = await ApiConnector.GetInstallation(name);
     }
 
-    protected override bool ShouldRender()
+    // Callback function whenever a user starts or stops the installation
+    protected async Task OnChangedStatus()
     {
-        Console.WriteLine("Should Render");
-        return true;
+        Installation = (await ApiConnector.GetInstallation(name));
     }
 }

@@ -114,27 +114,25 @@
         
 
 @code {
-    List<Client> Clients = null;
-    List<Subscription> Subs = null;
-    private CopyInst _CopyInst = new CopyInst();
-    
     [Parameter]
     public string Name { get; set; }
+
+    [Parameter]
+    public EventCallback OnChangedStatus { get; set; }
+
+    List<Client> Clients;
+    List<Subscription> Subs;
+    private CopyInst _CopyInst = new CopyInst();
+
+    protected override void OnInitialized()
+    {
+        Clients = new List<Client>();
+        Subs = new List<Subscription>();
+    }
+
     protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
     {
-        await LoadClients();
-        await LoadSub();
-    }
-
-    public async Task LoadClients()
-    {
-        Clients = null;
         Clients = await ApiConnector.GetClients();
-    }
-
-    public async Task LoadSub() 
-    {
-        Subs = null;
         Subs = await ApiConnector.GetSubscriptions();
     }
     
@@ -144,6 +142,7 @@
         byte[] file = System.Text.Encoding.UTF8.GetBytes("full address:s:20.52.144.65:3389\nprompt for credentials:i:1\nadministrative session:i:1");
         await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "connect.rdp", "text/plain", file);
     }
+
     async Task DownloadBinary()
     {
         byte[] file = Enumerable.Range(0, 100).Cast<byte>().ToArray<byte>();
@@ -198,26 +197,16 @@
 
     }
 
-    async Task<List<Client>> GetClients()
-    {
-        return await ApiConnector.GetClients();
-    }
-
     async Task StartInst()
     {
         await ApiConnector.Start(Name);
-        base.ShouldRender();
+        await OnChangedStatus.InvokeAsync();
     }
 
-    async Task StopInst()
+    protected async Task StopInst()
     {
         await ApiConnector.Stop(Name);
-        base.ShouldRender();
-    }
-
-    public override async Task SetParametersAsync(ParameterView parameters)
-    {
-        await base.SetParametersAsync(parameters);
+        await OnChangedStatus.InvokeAsync();
     }
 }
 

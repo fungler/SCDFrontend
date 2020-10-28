@@ -19,6 +19,8 @@ namespace SCDFrontend.Models
         public string copyMethod { get; set; }
 
         public string status { get; set; }
+
+        //public string state { get; set; }
     }
 
     [Serializable]

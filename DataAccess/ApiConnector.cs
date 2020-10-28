@@ -27,7 +27,7 @@ namespace SCDFrontend.DataAccess
             {
                 String res = await response.Content.ReadAsStringAsync();
                 installations = JsonConvert.DeserializeObject<List<Installation>>(res);
-
+                
             }
             return installations;
         }

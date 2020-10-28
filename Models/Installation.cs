@@ -20,7 +20,7 @@ namespace SCDFrontend.Models
 
         public string status { get; set; }
 
-        //public string state { get; set; }
+        public string state { get; set; }
     }
 
     [Serializable]

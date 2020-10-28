@@ -7,26 +7,28 @@
 @using System.ComponentModel;
 @inject HttpClient Http;
 @inject IJSRuntime JSRuntime
+@inject IModalService modal
 
 
-<button type="button" class="btn btn-dark" >Launch</button>
+<button type="button" style="width: 6cm;" class="btn btn-dark" >Launch</button>
 <br>
 <br>
-<button type="button" class="btn btn-dark" @onclick="StartInst">Start</button>
+<button type="button" style="width: 6cm;" class="btn btn-dark" @onclick="StartInst">Start</button>
 <br>
 <br>
-<button type="button" class="btn btn-dark" @onclick="StopInst">Stop</button>
+<button type="button" style="width: 6cm;" class="btn btn-dark" @onclick="StopInst">Stop</button>
 <br>
 <br>
-<button type="button" id="copy" class="btn btn-dark" data-toggle="modal" data-target="#myModal" @onclick="CreateCopy">Copy</button>
+<button type="button" style="width: 6cm;" class="btn btn-dark" @onclick="OpenModal">Create Copy</button>
 <br>
 <br>
-<button type="button" class="btn btn-dark">Delete</button>
+<button type="button" style="width: 6cm;" class="btn btn-dark">Delete</button>
 <br>
 <br>
-<button type="button" class="btn btn-dark" @onclick="DownloadText">Monitor Server</button>
-
-
+<button type="button" style="width: 6cm;" class="btn btn-dark" @onclick="DownloadText">Monitor Server</button>
+<br>
+<br>
+<button type="button" style="width: 6cm;" class="btn btn-dark" @onclick="DownloadText">Add Service Agent </button>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -94,13 +96,17 @@
 	    	        </div>
 
 
-	    	        <div class="modal-split">
+	    	        <div class="modal-split" id="submit-copy">
                         <h5>Review details</h5>
 	    	            Name: @_CopyInst.oldName <br>                        
                         Copy method: @_CopyInst.copyMethod <br>
                         Client: @_CopyInst.client<br>
                         <button type="submit" @onclick="CreateCopy1">Submit</button>
-	    	        </div>	
+	    	        </div>
+
+                    <div class="modal-split">
+
+                    </div>	
 
                 </div>
             </EditForm>
@@ -123,6 +129,14 @@
     List<Client> Clients;
     List<Subscription> Subs;
     private CopyInst _CopyInst = new CopyInst();
+
+    void OpenModal()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("Name", Name);
+        var m = modal.Show<CreateCopy>("data", parameters);
+
+    }
 
     protected override void OnInitialized()
     {
@@ -169,7 +183,6 @@
     async Task CreateCopy1() 
     {
         _CopyInst.oldName = Name;
-        Console.WriteLine("Client id" + _CopyInst.clientId);
         // InputSelect cannot handle objects
         foreach(var c in Clients)
         {

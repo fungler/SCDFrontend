@@ -1,0 +1,106 @@
+@using SCDFrontend.Models
+@using SCDFrontend.DataAccess
+@inject IModalService ModalService
+
+<div>
+    <EditForm Model="@_CopyInst">
+        <DataAnnotationsValidator/>
+        <h5>Name and Method:</h5>
+        <label for="inst-name">Installation name:</label>
+                        <InputText id="inst-name" @bind-Value="_CopyInst.newName" placeholder="Inst-01"/><br>
+                        <br>
+                        <InputRadioGroup Name="method" @bind-Value="_CopyInst.copyMethod">
+                            @foreach (var cm in (CopyMethod[]) Enum.GetValues(typeof(CopyMethod)))
+                            {
+                                <InputRadio Value="Enum.GetName(typeof(CopyMethod), cm)" />
+                                @Enum.GetName(typeof(CopyMethod), cm)
+                                <br>
+                            }
+                        </InputRadioGroup>
+                        <br>
+            <h5>Choose client:</h5>
+                    <select class="custom-select" id="inst-client" @bind="_CopyInst.clientId">
+                            @if(Clients == null)
+                            {
+                                <option>Loading clients</option>
+                            } 
+                            else 
+                            {
+                                @foreach (var c in Clients)
+                                {
+                                    <option value="@c.id">@c.name</option>
+                                }
+                            }
+                        </select>
+                        <br>
+                        <h5>Choose subscription:</h5>
+                        <select class="custom-select" id="inst-client" @bind="_CopyInst.subId">
+                            @if(Subs == null)
+                            {
+                                <option>Loading subscriptions</option>
+                            } 
+                            else 
+                            {
+                                @foreach (var s in Subs)
+                                {
+                                    <option value="@s.id">@s.name</option>
+                                }
+                            }
+                        </select>
+                        <button @onclick="Confirm" class="btn btn-primary">Submit</button>
+    </EditForm>
+</div>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public string Name {get; set; }
+    List<Client> Clients;
+    List<Subscription> Subs;
+    private CopyInst _CopyInst = new CopyInst();
+
+    protected override void OnInitialized()
+    {
+        Clients = new List<Client>();
+        Subs = new List<Subscription>();
+    }
+
+    protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
+    {
+        Clients = await ApiConnector.GetClients();
+        Subs = await ApiConnector.GetSubscriptions();
+    }
+
+    async Task Confirm()
+    {
+        _CopyInst.oldName = Name;
+        // InputSelect cannot handle objects
+        foreach(var c in Clients)
+        {
+            if(_CopyInst.clientId == c.id)
+            {
+                _CopyInst.client = c;
+            }
+        }
+
+        foreach(var s in Subs)
+        {
+            if(_CopyInst.subId == s.id)
+            {
+                _CopyInst.subscription = s;
+            }
+        }
+
+        var parameters = new ModalParameters();
+        parameters.Add("copy", _CopyInst);
+        var confirmationModal = ModalService.Show<ConfirmCopy>("Confirm Copy", parameters);
+        var result = await confirmationModal.Result;
+
+        if (result.Cancelled)
+        {
+            return;
+        }
+        BlazoredModal.Close();
+    }
+}

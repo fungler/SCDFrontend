@@ -1,0 +1,27 @@
+@using SCDFrontend.Models
+@using SCDFrontend.DataAccess
+
+<div>
+    <p>Copy of: @Copy.oldName</p>
+    <p>Copy name: @Copy.newName</p>
+    <p>Copy method: @Copy.copyMethod</p>
+    <p>Client: @Copy.client?.name</p>
+    <p>Subscription: @Copy.subscription?.name</p>
+    <button @onclick="CreateCopy" class="btn btn-primary">Create copy</button>
+    <button @onclick="Cancel" class="btn btn-secondary">Change data</button>
+</div>
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public CopyInst Copy { get; set; }
+
+    async Task CreateCopy()
+    {
+        await ApiConnector.createCopy(Copy);
+        await BlazoredModal.Close(ModalResult.Ok(true));
+    }
+
+    void Cancel() => BlazoredModal.Cancel();
+}

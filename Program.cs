@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SCDFrontend.DataAccess;
+using Blazored.Modal;
 
 namespace SCDFrontend
 {
@@ -19,7 +20,7 @@ namespace SCDFrontend
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
+            builder.Services.AddBlazoredModal();
             await builder.Build().RunAsync();
         }
     }

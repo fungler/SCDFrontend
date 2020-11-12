@@ -29,10 +29,10 @@ else
     <table class="table table-hover table-dark">
     <thead>
         <tr>
-            <th style="width: 15%" scope="col">Name</th>
-            <th style="width: 35%" scope="col">Subscription Name</th>
-            <th style="width: 25%" scope="col">Copy Method</th>
-            <th style="width: 25%" scope="col">Client</th>
+            <th style="width: 15%" @onclick="@(() => SortData("NAME"))">Name</th>
+            <th style="width: 35%" scope="col" @onclick="@(() => SortData("SUB"))">Subscription Name</th>
+            <th style="width: 25%" scope="col" @onclick="@(() => SortData("COPY"))">Copy Method</th>
+            <th style="width: 25%" scope="col" @onclick="@(() => SortData("CLIENT"))">Client</th>
         </tr>
     </thead>
     @if (ShownInstallations is not null)
@@ -52,10 +52,12 @@ else
     </table>
 </div>
 
+
 <button type="button" class="btn btn-dark" @onclick="@(() => LoadInstallations())">Refresh</button>
 
 
 @code {
+    private ApiConnector apicon = new ApiConnector();
     [Parameter]
     public string sub { get; set; }
 
@@ -67,7 +69,7 @@ else
     // Load data from database
     public async Task<List<Installation>> LoadInstallations()
     {
-        return await ApiConnector.GetInstallations();
+        return await apicon.GetInstallations();
     }
 
     protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
@@ -157,17 +159,23 @@ else
     private void SortData(string columnName)
     {
         List<Installation> SortedInst = new List<Installation>();
-        switch (columnName)
+        Console.WriteLine("SORT");
+        if(columnName.Equals(activeSortColumn))
         {
-            case "ID":
+            isSortedAscending = !isSortedAscending;
+        }
+
+        switch (columnName)
+        {   
+            case "SUB":
                 if (isSortedAscending)
                 {
-                    ShownInstallations = ShownInstallations.OrderByDescending(i => i.id).ToList();
+                    ShownInstallations = ShownInstallations.OrderByDescending(i => i.subscription.name).ToList();
                     isSortedAscending = false;
                 }
                 else
                 {
-                   ShownInstallations = ShownInstallations.OrderBy(i => i.id).ToList();
+                   ShownInstallations = ShownInstallations.OrderBy(i => i.subscription.name).ToList();
                     isSortedAscending = true;
                 }
                 break;
@@ -181,6 +189,31 @@ else
                 else
                 {
                     ShownInstallations = ShownInstallations.OrderBy(i => i.id).ToList();
+                    isSortedAscending = true;
+                }
+                break;
+
+            case "COPY":
+                if (isSortedAscending)
+                {
+                    ShownInstallations = ShownInstallations.OrderByDescending(i => i.copyMethod).ToList();
+                    isSortedAscending = false;
+                }
+                else
+                {
+                    ShownInstallations = ShownInstallations.OrderBy(i => i.copyMethod).ToList();
+                    isSortedAscending = true;
+                }
+                break;
+            case "CLIENT":
+                if (isSortedAscending)
+                {
+                    ShownInstallations = ShownInstallations.OrderByDescending(i => i.client.name).ToList();
+                    isSortedAscending = false;
+                }
+                else
+                {
+                    ShownInstallations = ShownInstallations.OrderBy(i => i.client.name).ToList();
                     isSortedAscending = true;
                 }
                 break;

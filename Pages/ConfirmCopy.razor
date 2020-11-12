@@ -12,14 +12,14 @@
 </div>
 
 @code {
-
+    private ApiConnector apicon = new ApiConnector();
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     [Parameter] public CopyInst Copy { get; set; }
 
     async Task CreateCopy()
     {
-        await ApiConnector.createCopy(Copy);
+        await apicon.CreateCopy(Copy);
         await BlazoredModal.Close(ModalResult.Ok(true));
     }
 

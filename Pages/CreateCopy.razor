@@ -53,6 +53,7 @@
 
 @code
 {
+    private ApiConnector apicon = new ApiConnector();
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     [Parameter] public string Name {get; set; }
@@ -68,8 +69,8 @@
 
     protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
     {
-        Clients = await ApiConnector.GetClients();
-        Subs = await ApiConnector.GetSubscriptions();
+        Clients = await apicon.GetClients();
+        Subs = await apicon.GetSubscriptions();
     }
 
     async Task Confirm()

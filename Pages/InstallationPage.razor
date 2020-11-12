@@ -36,6 +36,7 @@
 
 
 @code {
+    private ApiConnector apicon = new ApiConnector();
     [Parameter]
     public string name { get; set; }
 
@@ -43,12 +44,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Installation = await ApiConnector.GetInstallation(name);
+        Installation = await apicon.GetInstallation(name);
     }
 
     // Callback function whenever a user starts or stops the installation
     protected async Task OnChangedStatus()
     {
-        Installation = (await ApiConnector.GetInstallation(name));
+        Installation = (await apicon.GetInstallation(name));
     }
 }

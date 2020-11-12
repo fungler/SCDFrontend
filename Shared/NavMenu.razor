@@ -37,6 +37,7 @@
 </MatNavMenu>
 
 @code {
+    private ApiConnector apicon = new ApiConnector();
     private bool collapseNavMenu = true;
     bool navSubMenuOpenState = true;
 
@@ -51,7 +52,7 @@
 
     public async Task GetSubscriptions()
     {
-        subscriptions = await ApiConnector.GetSubscriptions();
+        subscriptions = await apicon.GetSubscriptions();
     }
 
     protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)

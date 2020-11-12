@@ -166,6 +166,7 @@
 </div>
 
 @code {
+    private ApiConnector apicon = new ApiConnector();
     [Parameter]
     public string Name { get; set; }
 
@@ -174,7 +175,7 @@
     public async Task DownloadJson()
     {
         loading = true;
-        ins = await ApiConnector.GetLatestJson(Name);
+        ins = await apicon.GetLatestJson(Name);
     }
 
     Dictionary<String, String> jsonNames = new Dictionary<string, string> 

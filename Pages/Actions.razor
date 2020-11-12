@@ -120,6 +120,7 @@
         
 
 @code {
+    private ApiConnector apicon = new ApiConnector();
     [Parameter]
     public string Name { get; set; }
 
@@ -146,8 +147,8 @@
 
     protected override async Task OnInitializedAsync() // run as page loads yis *<|:-)
     {
-        Clients = await ApiConnector.GetClients();
-        Subs = await ApiConnector.GetSubscriptions();
+        Clients = await apicon.GetClients();
+        Subs = await apicon.GetSubscriptions();
     }
     
     async Task DownloadText()
@@ -202,7 +203,7 @@
             }
         }
 
-        await ApiConnector.createCopy(_CopyInst);
+        await apicon.CreateCopy(_CopyInst);
     }
 
     void Something() 
@@ -212,13 +213,13 @@
 
     async Task StartInst()
     {
-        await ApiConnector.Start(Name);
+        await apicon.Start(Name);
         await OnChangedStatus.InvokeAsync();
     }
 
     protected async Task StopInst()
     {
-        await ApiConnector.Stop(Name);
+        await apicon.Stop(Name);
         await OnChangedStatus.InvokeAsync();
     }
 }

@@ -8,6 +8,7 @@
 @inject HttpClient Http;
 @inject IJSRuntime JSRuntime
 @inject IModalService modal
+@inject IToastService toastService
 
 
 <button type="button" style="width: 6cm;" class="btn btn-dark" >Launch</button>
@@ -213,14 +214,32 @@
 
     async Task StartInst()
     {
-        await apicon.Start(Name);
-        await OnChangedStatus.InvokeAsync();
+        toastService.ShowInfo("Starting the installation");
+        var status = await apicon.Start(Name);
+        
+        if(status.IsSuccessStatusCode)
+        {
+            toastService.ShowSuccess("Done");
+        }
+        else
+        {
+            toastService.ShowError("Could not start the installation");
+        }
+        
     }
 
     protected async Task StopInst()
     {
-        await apicon.Stop(Name);
-        await OnChangedStatus.InvokeAsync();
+        toastService.ShowInfo("Stopping the installation");
+        var status = await apicon.Stop(Name);
+        
+        if(status.IsSuccessStatusCode)
+        {
+            toastService.ShowSuccess("Done");
+        }
+        else
+        {
+            toastService.ShowError("Could not stop the installation");
+        }
     }
 }
-

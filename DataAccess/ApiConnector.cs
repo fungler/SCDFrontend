@@ -6,7 +6,6 @@ using SCDFrontend.Models;
 using System.Collections.Generic;
 using System.Text;
 
-
 namespace SCDFrontend.DataAccess
 {
 
@@ -89,8 +88,16 @@ namespace SCDFrontend.DataAccess
         public async Task<HttpResponseMessage> Start(string name)
         {
             var res = await client.GetAsync(BaseUrl + "installations/start?name=" + name);
+            Console.WriteLine(res.Content);
             return res;
         }
+
+        public async Task<HttpResponseMessage> CheckStatus(string name)
+        {
+            var res = await client.GetAsync(BaseUrl + "installation/status?name=" + name);
+            return res;
+        }
+
 
         public async Task<HttpResponseMessage> Stop(string name)
         {

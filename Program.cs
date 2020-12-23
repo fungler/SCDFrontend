@@ -1,14 +1,10 @@
 using System;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using SCDFrontend.DataAccess;
 using Blazored.Modal;
+using Blazored.Toast;
 
 namespace SCDFrontend
 {
@@ -21,6 +17,7 @@ namespace SCDFrontend
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddBlazoredModal();
+            builder.Services.AddBlazoredToast();
             await builder.Build().RunAsync();
         }
     }

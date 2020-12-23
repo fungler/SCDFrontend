@@ -208,3 +208,7 @@ app {
     
 }
 
+.blazored-toast-container {
+    z-index: 1;
+}
+

@@ -4,11 +4,11 @@
 @using SCDFrontend.DataAccess;
 @using SCDFrontend.Models;
 @inject NavigationManager NavigationManager;
-
+@inject IToastService toastService
 
 <head>
 </head>
-
+<button class="btn btn-info" @onclick="@(() => toastService.ShowInfo("I'm an INFO message"))">Info Toast</button>
 @if(string.IsNullOrEmpty(sub))
 {
     <h1>All Installations</h1>

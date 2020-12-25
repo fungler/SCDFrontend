@@ -85,6 +85,10 @@ else
         {
             foreach(var inst in AllInstallations)
             {
+                if (inst.subscription == null)
+                {
+                    return;
+                } 
                 if(inst.subscription.name.Equals(sub.Replace("-"," "))) {
                     ShownInstallations.Add(inst);
                 }
@@ -124,6 +128,10 @@ else
         {
             foreach(var inst in AllInstallations)
             {
+                if (inst.subscription == null)
+                {
+                    continue;
+                } 
                 if(inst.subscription.name.Equals(sub.Replace("-"," "))) {
                     ShownInstallations.Add(inst);
                 }

@@ -26,6 +26,7 @@
                             } 
                             else 
                             {
+                                <option value="" selected disabled hidden>Choose here</option>
                                 @foreach (var c in Clients)
                                 {
                                     <option value="@c.id">@c.name</option>
@@ -41,13 +42,15 @@
                             } 
                             else 
                             {
+                                <option value="" selected disabled hidden>Choose here</option>
                                 @foreach (var s in Subs)
                                 {
                                     <option value="@s.id">@s.name</option>
                                 }
                             }
                         </select>
-                        <button @onclick="Confirm" class="btn btn-primary">Submit</button>
+                        <br>
+                        <button disabled="@NextBtnIsDisabled" @onclick="OpenConfirmationModal" class="btn btn-primary">Next</button>
     </EditForm>
 </div>
 
@@ -61,6 +64,8 @@
     List<Subscription> Subs;
     private CopyInst _CopyInst = new CopyInst();
 
+    protected bool NextBtnIsDisabled { get; set; }
+
     protected override void OnInitialized()
     {
         Clients = new List<Client>();
@@ -73,7 +78,7 @@
         Subs = await apicon.GetSubscriptions();
     }
 
-    async Task Confirm()
+    async Task OpenConfirmationModal()
     {
         _CopyInst.oldName = Name;
         // InputSelect cannot handle objects
@@ -82,6 +87,7 @@
             if(_CopyInst.clientId == c.id)
             {
                 _CopyInst.client = c;
+                break;
             }
         }
 
@@ -90,6 +96,7 @@
             if(_CopyInst.subId == s.id)
             {
                 _CopyInst.subscription = s;
+                break;
             }
         }
 

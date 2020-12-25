@@ -1,5 +1,6 @@
 @using SCDFrontend.Models
 @using SCDFrontend.DataAccess
+@inject IToastService toastService
 
 <div>
     <p>Copy of: @Copy.oldName</p>
@@ -19,8 +20,17 @@
 
     async Task CreateCopy()
     {
-        await apicon.CreateCopy(Copy);
         await BlazoredModal.Close(ModalResult.Ok(true));
+        toastService.ShowInfo("Creating copy");
+        var res = await apicon.CreateCopy(Copy);
+        if(res.IsSuccessStatusCode)
+        {
+            toastService.ShowSuccess("Done");
+        }
+        else 
+        {
+            toastService.ShowError("Could not copy. Bitch!");
+        }
     }
 
     void Cancel() => BlazoredModal.Cancel();

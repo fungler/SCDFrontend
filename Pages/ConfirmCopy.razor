@@ -21,15 +21,16 @@
     async Task CreateCopy()
     {
         await BlazoredModal.Close(ModalResult.Ok(true));
-        toastService.ShowInfo("Creating copy");
+        toastService.ShowInfo("Name: " + Copy.newName + ", Copy of: " + Copy.oldName, "Copy started");
+        
         var res = await apicon.CreateCopy(Copy);
         if(res.IsSuccessStatusCode)
         {
-            toastService.ShowSuccess("Done");
+            toastService.ShowSuccess("Name: " + Copy.newName + ", Copy of: " + Copy.oldName, "Copy created successfully");
         }
         else 
         {
-            toastService.ShowError("Could not copy. Bitch!");
+            toastService.ShowError("Name: " + Copy.newName + ", Copy of: " + Copy.oldName, "Copy could not be created");
         }
     }
 

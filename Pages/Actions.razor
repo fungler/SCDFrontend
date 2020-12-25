@@ -213,32 +213,32 @@
 
     async Task StartInst()
     {
-        toastService.ShowInfo("Starting the installation");
+        toastService.ShowInfo("Starting installation: " + Name);
         var status = await apicon.Start(Name);
         
         if(status.IsSuccessStatusCode)
         {
-            toastService.ShowSuccess("Done");
+            toastService.ShowSuccess("Installation: " + Name + " has been started");
         }
         else
         {
-            toastService.ShowError("Could not start the installation");
+            toastService.ShowError("Could not start installation: " + Name);
         }
         
     }
 
     protected async Task StopInst()
     {
-        toastService.ShowInfo("Stopping the installation");
+        toastService.ShowInfo("Stopping installation: " + Name);
         var status = await apicon.Stop(Name);
         
         if(status.IsSuccessStatusCode)
         {
-            toastService.ShowSuccess("Done");
+            toastService.ShowSuccess("Installation: " + Name + " has been stopped");
         }
         else
         {
-            toastService.ShowError("Could not stop the installation");
+            toastService.ShowError("Could not stop installation: " + Name);
         }
     }
 }

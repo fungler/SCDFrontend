@@ -6,23 +6,22 @@ namespace SCDFrontend.Models
     [Serializable]
     public class CopyInst
     {
-        [Required]
+        [Required(ErrorMessage="Please choose a name")]
         public string newName { get; set; }
 
-        [Required]
         public string oldName { get; set; }
 
-        [Required]
         public Client client { get; set; }
 
-        [Required, EnumDataType(typeof(CopyMethod))]
+        [Required(ErrorMessage="Please choose a copy method"), EnumDataType(typeof(CopyMethod))]
         public string copyMethod { get; set; }
 
-        [Required]
         public Subscription subscription { get; set; }
 
+        [Required(ErrorMessage="Please choose a client")]
         public string clientId { get; set; }
-
+        
+        [Required(ErrorMessage="Please choose a subscription")]
         public string subId { get; set; }
     }
 

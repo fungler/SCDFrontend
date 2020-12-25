@@ -3,8 +3,9 @@
 @inject IModalService ModalService
 
 <div>
-    <EditForm Model="@_CopyInst">
+    <EditForm Model="@_CopyInst" OnValidSubmit="@OpenConfirmationModal">
         <DataAnnotationsValidator/>
+        <ValidationSummary />
         <h5>Name and Method:</h5>
         <label for="inst-name">Installation name:</label>
                         <InputText id="inst-name" @bind-Value="_CopyInst.newName" placeholder="Inst-01"/><br>
@@ -50,7 +51,7 @@
                             }
                         </select>
                         <br>
-                        <button disabled="@NextBtnIsDisabled" @onclick="OpenConfirmationModal" class="btn btn-primary">Next</button>
+                        <button type="submit" class="btn btn-primary">Next</button>
     </EditForm>
 </div>
 
@@ -63,8 +64,6 @@
     List<Client> Clients;
     List<Subscription> Subs;
     private CopyInst _CopyInst = new CopyInst();
-
-    protected bool NextBtnIsDisabled { get; set; }
 
     protected override void OnInitialized()
     {

@@ -1,6 +1,7 @@
 @using SCDFrontend.Models
 @using SCDFrontend.DataAccess
 @inject IModalService ModalService
+@inject IJSRuntime jsRuntime
 
 <div>
     <EditForm Model="@_CopyInst" OnValidSubmit="@OpenConfirmationModal">
@@ -61,6 +62,8 @@
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     [Parameter] public string Name {get; set; }
+
+    private string Error { get; set; }
     List<Client> Clients;
     List<Subscription> Subs;
     private CopyInst _CopyInst = new CopyInst();
@@ -80,6 +83,7 @@
     async Task OpenConfirmationModal()
     {
         _CopyInst.oldName = Name;
+        
         // InputSelect cannot handle objects
         foreach(var c in Clients)
         {
@@ -90,24 +94,25 @@
             }
         }
 
-        foreach(var s in Subs)
-        {
-            if(_CopyInst.subId == s.id)
+            foreach(var s in Subs)
             {
-                _CopyInst.subscription = s;
-                break;
+                if(_CopyInst.subId == s.id)
+                {
+                    _CopyInst.subscription = s;
+                    break;
+                }
             }
-        }
 
-        var parameters = new ModalParameters();
-        parameters.Add("copy", _CopyInst);
-        var confirmationModal = ModalService.Show<ConfirmCopy>("Confirm Copy", parameters);
-        var result = await confirmationModal.Result;
+            var parameters = new ModalParameters();
+            parameters.Add("copy", _CopyInst);
+            var confirmationModal = ModalService.Show<ConfirmCopy>("Confirm Copy", parameters);
+            var result = await confirmationModal.Result;
 
-        if (result.Cancelled)
-        {
-            return;
-        }
-        BlazoredModal.Close();
+            if (result.Cancelled)
+            {
+                return;
+            }
+            BlazoredModal.Close();
+
     }
 }

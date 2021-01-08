@@ -45,7 +45,7 @@ namespace SCDFrontend.DataAccess
 
         public async Task<InstallationRoot> GetLatestJson(string name)
         {
-            HttpResponseMessage response = await client.GetAsync(BaseUrl + "installations/json?path=installations/"+ name + "/" + name + ".json");
+            HttpResponseMessage response = await client.GetAsync(BaseUrl + "installations/json?instName=" + name);
 
             string res = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<InstallationRoot>(res);
@@ -94,7 +94,7 @@ namespace SCDFrontend.DataAccess
 
         public async Task<HttpResponseMessage> CheckStatus(string name)
         {
-            var res = await client.GetAsync(BaseUrl + "installation/status?name=" + name);
+            var res = await client.GetAsync(BaseUrl + "installations/status?name=" + name);
             return res;
         }
 
@@ -102,6 +102,12 @@ namespace SCDFrontend.DataAccess
         public async Task<HttpResponseMessage> Stop(string name)
         {
             var res = await client.GetAsync(BaseUrl + "installations/stop?name=" + name);
+            return res;
+        }
+
+        public async Task<HttpResponseMessage> CheckNameAvailability(string name)
+        {
+            var res = await client.GetAsync(BaseUrl + "installations/checkName/" + name);
             return res;
         }
     }
